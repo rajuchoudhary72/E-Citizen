@@ -74,12 +74,18 @@ dependencies {
     implementation(libs.kotlin.stdlib)
     implementation(libs.kotlinx.coroutines.android)
 
+
+    implementation(libs.accompanist.pager)
+    implementation(libs.accompanist.pager.indicators)
+
     implementation(libs.androidx.compose.ui.tooling.preview)
     debugImplementation(libs.androidx.compose.ui.tooling)
 
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)
     kapt(libs.hilt.compiler)
+
+
 
     // custom declaration for latest versions of material 3 and adaptive accompanist
     implementation("androidx.compose.material3:material3:1.0.0-rc01")

@@ -27,4 +27,14 @@
     <string name="profile">Profile</string>
 
 
+    <string name="notice_board">Notice Board</string>
+    <string name="services">Services</string>
+    <string name="downloads">Downloads</string>
+    <string name="important_places">Important Places</string>
+    <string name="register_complaints">Register Complaints</string>
+    <string name="advertisements">Advertisements</string>
+    <string name="telephone_directory">Telephone Directory</string>
+    <string name="about_us">About Us</string>
+
+
 </resources>

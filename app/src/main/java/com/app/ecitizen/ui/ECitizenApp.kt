@@ -1,7 +1,9 @@
 package com.app.ecitizen.ui
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -63,7 +66,8 @@ fun ECitizenApp(
                 )
             }
 
-            shouldShowBottomBar = appState.navController.currentDestination?.route?.contains(homeNavigationRoute) == true
+            shouldShowBottomBar =
+                appState.navController.currentDestination?.route?.contains(homeNavigationRoute) == true
         }
 
 
@@ -82,6 +86,13 @@ fun ECitizenApp(
             topBar = {
                 if (shouldShowBottomBar)
                     CenterAlignedTopAppBar(
+                        navigationIcon = {
+                            Image(
+                                modifier = Modifier.size(45.dp).padding(start = 16.dp),
+                                painter = painterResource(id = R.drawable.india_ashoka),
+                                contentDescription =null
+                            )
+                        },
                         title = {
                             Text(
                                 text = "Khandela Nagar Palika",
@@ -111,7 +122,8 @@ fun ECitizenApp(
                 modifier = Modifier.padding(padding),
                 navController = appState.navController,
                 onBackClick = appState::onBackClick,
-                openAppLocaleSettings = { appState.setShowAppLocaleDialog(true) }
+                openAppLocaleSettings = { appState.setShowAppLocaleDialog(true) },
+                closeSplashScreen = { appState.closeSplashScreen() },
             )
         }
     }

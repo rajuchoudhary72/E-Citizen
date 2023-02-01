@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor() : ViewModel() {
-    private val _mobileNumber = MutableStateFlow("")
+    private val _mobileNumber = MutableStateFlow("9787878787")
     val mobileNumber = _mobileNumber.asStateFlow()
 
     val isMobileValid = _mobileNumber

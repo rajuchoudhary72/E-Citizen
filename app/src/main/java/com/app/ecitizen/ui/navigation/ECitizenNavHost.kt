@@ -4,12 +4,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import com.app.ecitizen.features.auth.loginNavigationRoute
 import com.app.ecitizen.features.auth.loginScreen
 import com.app.ecitizen.features.auth.navigateToOtpVerification
 import com.app.ecitizen.features.auth.otpVerificationScreen
 import com.app.ecitizen.features.home.homeScreen
 import com.app.ecitizen.features.home.navigateToHome
+import com.app.ecitizen.features.noticeBoard.navigateToNotice
+import com.app.ecitizen.features.noticeBoard.navigateToNoticeBoard
+import com.app.ecitizen.features.noticeBoard.noticeBoardScreen
+import com.app.ecitizen.features.splash.splashScreen
+import com.app.ecitizen.features.splash.splashScreenNavigationRoute
 
 /**
  * Top-level navigation graph. Navigation is organized as explained at
@@ -23,14 +27,18 @@ fun ECitizenNavHost(
     navController: NavHostController,
     onBackClick: () -> Unit,
     openAppLocaleSettings: () -> Unit,
+    closeSplashScreen: () -> Unit,
     modifier: Modifier = Modifier,
-    startDestination: String = loginNavigationRoute,
+    startDestination: String = splashScreenNavigationRoute,
 ) {
     NavHost(
         navController = navController,
         startDestination = startDestination,
         modifier = modifier,
     ) {
+
+        splashScreen(closeSplashScreen = closeSplashScreen)
+
         loginScreen(
             navigateToVerifyOtp = { mobileNumber ->
                 navController.navigateToOtpVerification(mobileNumber)
@@ -45,7 +53,15 @@ fun ECitizenNavHost(
         )
 
         homeScreen(
-            openAppLocaleSettings = openAppLocaleSettings
+            navigateToService = { service ->
+                navController.navigateToNoticeBoard()
+            }
+        )
+        noticeBoardScreen(
+            onBackClick = onBackClick,
+            navigateToNotice = {
+                navController.navigateToNotice()
+            }
         )
     }
 }
