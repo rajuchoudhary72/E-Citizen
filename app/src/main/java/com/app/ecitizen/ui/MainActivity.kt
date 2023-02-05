@@ -37,11 +37,6 @@ class MainActivity : ComponentActivity() {
                     darkIcons = useDarkIcons
                 )
 
-                systemUiController.setStatusBarColor(
-                    color = Color.White,
-                    darkIcons = useDarkIcons
-                )
-
                 onDispose {}
             }
             ECitizenTheme {

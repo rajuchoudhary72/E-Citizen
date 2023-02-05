@@ -22,7 +22,7 @@ class OtpVerificationViewModel @Inject constructor(
 
     val mobileNumber = otpVerificationArgs.mobileNumber
 
-    private val _otp = MutableStateFlow("")
+    private val _otp = MutableStateFlow("1234")
     val otp = _otp.asStateFlow()
 
     val isMobileValid = _otp

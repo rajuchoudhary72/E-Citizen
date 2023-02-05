@@ -15,6 +15,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.app.ecitizen.features.home.homeNavigationRoute
+import com.app.ecitizen.features.home.navigateToHome
+import com.app.ecitizen.features.splash.splashScreenNavigationRoute
 import com.app.ecitizen.ui.navigation.TopLevelDestination
 import com.app.ecitizen.utils.NetworkMonitor
 import kotlinx.coroutines.CoroutineScope
@@ -101,6 +103,24 @@ class ECitizenAppState(
 
     fun setShowAppLocaleDialog(shouldShow: Boolean) {
         shouldShowAppLocaleDialog = shouldShow
+    }
+
+    fun closeSplashScreen() {
+        val navOptions = navOptions {
+            // Pop up to the start destination of the graph to
+            // avoid building up a large stack of destinations
+            // on the back stack as users select items
+            popUpTo(splashScreenNavigationRoute){
+                saveState = true
+                inclusive = true
+            }
+            // Avoid multiple copies of the same destination when
+            // reselecting the same item
+            launchSingleTop = true
+            // Restore state when reselecting a previously selected item
+            restoreState = true
+        }
+        navController.navigateToHome(navOptions)
     }
 }
 
