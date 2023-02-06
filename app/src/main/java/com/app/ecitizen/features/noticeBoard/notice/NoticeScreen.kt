@@ -123,7 +123,8 @@ fun NoticeItem() {
                         .background(
                             color = MaterialTheme.colorScheme.background,
                             shape = RoundedCornerShape(percent = 50)
-                        ).size(30.dp),
+                        )
+                        .size(30.dp),
                     onClick = { }
                 ) {
                     Icon(

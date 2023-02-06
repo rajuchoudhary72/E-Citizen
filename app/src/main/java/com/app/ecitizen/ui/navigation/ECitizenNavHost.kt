@@ -4,16 +4,32 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import com.app.ecitizen.R
+import com.app.ecitizen.features.advertisement.advertisementScreen
+import com.app.ecitizen.features.advertisement.navigateToAdvertisement
 import com.app.ecitizen.features.auth.loginScreen
 import com.app.ecitizen.features.auth.navigateToOtpVerification
 import com.app.ecitizen.features.auth.otpVerificationScreen
+import com.app.ecitizen.features.complaint.navigateToRegisterComplaint
+import com.app.ecitizen.features.complaint.navigateToViewComplaint
+import com.app.ecitizen.features.complaint.registerComplaintScreen
+import com.app.ecitizen.features.download.downloadScreen
+import com.app.ecitizen.features.download.navigateToDownload
 import com.app.ecitizen.features.home.homeScreen
 import com.app.ecitizen.features.home.navigateToHome
 import com.app.ecitizen.features.noticeBoard.navigateToNotice
 import com.app.ecitizen.features.noticeBoard.navigateToNoticeBoard
 import com.app.ecitizen.features.noticeBoard.noticeBoardScreen
+import com.app.ecitizen.features.place.navigateToPlaces
+import com.app.ecitizen.features.place.placesScreen
+import com.app.ecitizen.features.profile.profileScreen
+import com.app.ecitizen.features.service.navigateToService
+import com.app.ecitizen.features.service.serviceScreen
 import com.app.ecitizen.features.splash.splashScreen
 import com.app.ecitizen.features.splash.splashScreenNavigationRoute
+import com.app.ecitizen.features.telephone.navigateToPhoneBook
+import com.app.ecitizen.features.telephone.navigateToTelephoneDirectory
+import com.app.ecitizen.features.telephone.telephoneDirectoryScreen
 
 /**
  * Top-level navigation graph. Navigation is organized as explained at
@@ -42,26 +58,77 @@ fun ECitizenNavHost(
         loginScreen(
             navigateToVerifyOtp = { mobileNumber ->
                 navController.navigateToOtpVerification(mobileNumber)
-            },
-            openAppLocaleSettings = openAppLocaleSettings
+            }, openAppLocaleSettings = openAppLocaleSettings
         )
         otpVerificationScreen(
             navigateToHome = {
                 navController.navigateToHome()
-            },
-            onBackClick = onBackClick
+            }, onBackClick = onBackClick
         )
 
         homeScreen(
+            navigateToRegisterComplaint = {
+                navController.navigateToRegisterComplaint()
+            },
+            navigateToViewComplaints = {
+                navController.navigateToViewComplaint()
+            },
             navigateToService = { service ->
-                navController.navigateToNoticeBoard()
-            }
-        )
-        noticeBoardScreen(
+                when (service.name) {
+                    R.string.notice_board -> {
+                        navController.navigateToNoticeBoard()
+                    }
+
+                    R.string.services -> {
+                        navController.navigateToService()
+                    }
+
+                    R.string.downloads -> {
+                        navController.navigateToDownload()
+                    }
+
+                    R.string.important_places -> {
+                        navController.navigateToPlaces()
+                    }
+                    R.string.advertisements -> {
+                        navController.navigateToAdvertisement()
+                    }
+                    R.string.telephone_directory -> {
+                        navController.navigateToTelephoneDirectory()
+                    }
+                }
+
+            })
+
+        profileScreen(onBackClick)
+
+        noticeBoardScreen(onBackClick = onBackClick, navigateToNotice = {
+            navController.navigateToNotice()
+        })
+
+        serviceScreen(
             onBackClick = onBackClick,
-            navigateToNotice = {
-                navController.navigateToNotice()
-            }
+        )
+
+        downloadScreen(
+            onBackClick = onBackClick,
+        )
+
+        placesScreen(
+            onBackClick = onBackClick,
+        )
+
+        registerComplaintScreen(
+            onBackClick = onBackClick
+        )
+
+        advertisementScreen(
+            onBackClick = onBackClick
+        )
+
+        telephoneDirectoryScreen(
+            onBackClick = onBackClick,
+            navigateToPhoneBook = {navController.navigateToPhoneBook()}
         )
     }
 }

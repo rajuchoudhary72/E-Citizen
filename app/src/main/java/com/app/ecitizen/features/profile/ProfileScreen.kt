@@ -1,0 +1,232 @@
+package com.app.ecitizen.features.profile
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.IconButton
+import androidx.compose.material.Scaffold
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.GTranslate
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.app.ecitizen.BuildConfig
+import com.app.ecitizen.R
+import com.app.ecitizen.ui.theme.Blue90
+import com.app.ecitizen.ui.theme.ECitizenTheme
+import com.app.ecitizen.ui.theme.Purple95
+
+@Composable
+fun ProfileScreenRoute(
+    onBackClick: () -> Unit,
+    profileScreenViewModel: ProfileScreenViewModel = hiltViewModel(),
+) {
+    ProfileScreen(
+        onBackClick
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ProfileScreen(onBackClick: () -> Unit) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(id = R.string.profile),
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = onBackClick) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_back),
+                            contentDescription = null
+                        )
+                    }
+                },
+                actions = {
+
+                    IconButton(onClick = {}) {
+                        Icon(imageVector = Icons.Outlined.GTranslate, contentDescription = null)
+                    }
+
+                    IconButton(onClick = {}) {
+                        Icon(imageVector = Icons.Outlined.Edit, contentDescription = null)
+                    }
+                }
+            )
+        },
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(padding)
+                .padding(20.dp),
+
+            horizontalAlignment = Alignment.CenterHorizontally
+
+        ) {
+
+            Text(
+                modifier = Modifier
+                    .padding(top = 20.dp)
+                    .drawBehind {
+                        drawCircle(
+                            color = Purple95,
+                            radius = 140f
+                        )
+                    },
+                text = "R",
+                style = MaterialTheme.typography.displayMedium,
+                textAlign = TextAlign.Center,
+
+            )
+
+            Text(
+                modifier = Modifier.padding(top = 30.dp),
+                text = "Raju Choudhary",
+                style = MaterialTheme.typography.headlineSmall
+            )
+
+            Text(
+                modifier = Modifier
+                    .padding(top = 40.dp)
+                    .fillMaxWidth(),
+                text = stringResource(R.string.full_name),
+                style = MaterialTheme.typography.labelLarge
+            )
+
+            OutlinedTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 6.dp),
+                placeholder = { Text(text = stringResource(R.string.mobile_number)) },
+                value = "Raju Choudhary",
+                onValueChange = { },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                singleLine = true,
+                readOnly = true
+            )
+
+
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
+                text = stringResource(R.string.mobile_number),
+                style = MaterialTheme.typography.labelLarge
+            )
+
+            OutlinedTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 6.dp),
+                placeholder = { Text(text = stringResource(R.string.mobile_number)) },
+                value = "+91 97832 80472",
+                onValueChange = { },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                singleLine = true,
+                readOnly = true
+            )
+
+
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
+                text = stringResource(R.string.ward_number),
+                style = MaterialTheme.typography.labelLarge
+            )
+
+            OutlinedTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 6.dp),
+                placeholder = { Text(text = stringResource(R.string.ward_number)) },
+                value = "13",
+                onValueChange = { },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                singleLine = true,
+                readOnly = true
+            )
+
+
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
+                text = stringResource(R.string.colony_name),
+                style = MaterialTheme.typography.labelLarge
+            )
+
+            OutlinedTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 6.dp),
+                placeholder = { Text(text = stringResource(R.string.colony_name)) },
+                value = "Singaniya Colony, Jaipur",
+                onValueChange = { },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                singleLine = true,
+                readOnly = true
+            )
+
+
+            Button(
+                modifier = Modifier
+                    .padding(top = 20.dp)
+                    .height(50.dp)
+                    .fillMaxWidth(),
+                onClick = {},
+                shape = MaterialTheme.shapes.extraSmall
+            ) {
+                Text(text = stringResource(R.string.logout))
+            }
+
+            Text(
+                modifier = Modifier.padding(top = 30.dp),
+                text = "Version - ${BuildConfig.VERSION_NAME}",
+                style = MaterialTheme.typography.labelSmall
+            )
+
+
+
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SplashScreenPreview() {
+    ECitizenTheme {
+        ProfileScreen({})
+    }
+}

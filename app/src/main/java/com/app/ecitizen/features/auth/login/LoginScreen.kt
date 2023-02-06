@@ -65,7 +65,7 @@ fun LoginScreen(
     isMobileValid: Boolean,
     verifyOtp: () -> Unit,
     openAppLocaleSettings: () -> Unit,
-    ) {
+) {
     Column(
         modifier = modifier
             .padding(20.dp)
@@ -73,8 +73,7 @@ fun LoginScreen(
             .paint(
                 painter = painterResource(id = R.drawable.app_background),
                 contentScale = ContentScale.Crop
-            )
-        ,
+            ),
     ) {
 
         Row(
@@ -176,8 +175,8 @@ fun LoginScreenPreview() {
                 mobileNumber = "9876543210",
                 updateMobileNumber = {},
                 isMobileValid = true,
-                openAppLocaleSettings={},
-                verifyOtp={},
+                openAppLocaleSettings = {},
+                verifyOtp = {},
             )
         }
     }

@@ -200,7 +200,7 @@ private fun TopAppBar(onBackClick: () -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun LoginScreenPreview() {
-    ECitizenTheme() {
+    ECitizenTheme {
         OtpVerificationScreen(
             modifier = Modifier,
             mobileNumber = "987654321",

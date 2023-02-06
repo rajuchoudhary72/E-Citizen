@@ -6,8 +6,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NoticeBoardViewModel @Inject constructor(
-) : ViewModel() {
-
-}
+) : ViewModel()
 
 

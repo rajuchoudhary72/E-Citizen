@@ -38,11 +38,11 @@ class OtpVerificationViewModel @Inject constructor(
     }
 
 
-    fun verifyOtp(){
+    fun verifyOtp() {
 
     }
 
-    fun resendOtp(){
+    fun resendOtp() {
 
     }
 

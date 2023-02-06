@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.app.ecitizen.R
+import com.app.ecitizen.features.complaint.ComplaintsDialog
 import com.app.ecitizen.ui.theme.ECitizenTheme
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -42,20 +43,38 @@ import kotlinx.coroutines.delay
 @Composable
 fun HomeScreenRoute(
     navigateToService: (Service) -> Unit,
+    navigateToRegisterComplaint: () -> Unit,
+    navigateToViewComplaints: () -> Unit,
     homeScreenViewModel: HomeScreenViewModel = hiltViewModel()
 ) {
     val homeUiState: HomeUiState by homeScreenViewModel.homeUiState.collectAsStateWithLifecycle()
 
+    if (homeScreenViewModel.shouldShowComplaintDialog) {
+        ComplaintsDialog(
+            onDismiss = { homeScreenViewModel.setShowComplaintDialog(false) },
+            navigateToViewComplaints = {
+                homeScreenViewModel.setShowComplaintDialog(false)
+                navigateToViewComplaints()
+            },
+            navigateToRegisterComplaint = {
+                homeScreenViewModel.setShowComplaintDialog(false)
+                navigateToRegisterComplaint()
+            }
+        )
+    }
+
     HomeScreen(
         homeUiState = homeUiState,
-        navigateToService = navigateToService
+        navigateToService = navigateToService,
+        showComplaintDialog = homeScreenViewModel::setShowComplaintDialog
     )
 }
 
 @Composable
 fun HomeScreen(
     homeUiState: HomeUiState,
-    navigateToService: (Service) -> Unit
+    navigateToService: (Service) -> Unit,
+    showComplaintDialog: (Boolean) -> Unit
 ) {
     when (homeUiState) {
         HomeUiState.Loading -> {
@@ -89,7 +108,13 @@ fun HomeScreen(
                 ) { service ->
                     ServicesCard(
                         service,
-                        onClickService = {navigateToService(service)}
+                        onClickService = {
+                            if (service.name == R.string.register_complaints) {
+                                showComplaintDialog(true)
+                            } else {
+                                navigateToService(service)
+                            }
+                        }
                     )
                 }
             }
@@ -204,7 +229,8 @@ fun HomeScreenPreview() {
                 bannerImages = mutableListOf("", "", "", "", ""),
                 services = Service.SERVICES,
             ),
-            navigateToService = {}
+            navigateToService = {},
+            showComplaintDialog = {}
         )
     }
 }

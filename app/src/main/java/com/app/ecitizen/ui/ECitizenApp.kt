@@ -4,6 +4,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.GTranslate
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -36,6 +38,7 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import com.app.ecitizen.R
 import com.app.ecitizen.features.home.homeNavigationRoute
 import com.app.ecitizen.features.localization.AppLocaleDialog
+import com.app.ecitizen.features.profile.profileScreenNavigationRoute
 import com.app.ecitizen.ui.navigation.ECitizenNavHost
 import com.app.ecitizen.ui.navigation.TopLevelDestination
 import com.app.ecitizen.utils.NetworkMonitor
@@ -55,6 +58,9 @@ fun ECitizenApp(
         var shouldShowBottomBar by rememberSaveable {
             mutableStateOf(false)
         }
+        var shouldShowAppBar by rememberSaveable {
+            mutableStateOf(false)
+        }
 
         // If user is not connected to the internet show a snack bar to inform them.
         val notConnectedMessage = stringResource(R.string.not_connected)
@@ -66,8 +72,13 @@ fun ECitizenApp(
                 )
             }
 
-            shouldShowBottomBar =
+            shouldShowAppBar =
                 appState.navController.currentDestination?.route?.contains(homeNavigationRoute) == true
+
+            shouldShowBottomBar = mutableListOf(
+                homeNavigationRoute,
+                profileScreenNavigationRoute
+            ).any { route -> route == appState.navController.currentDestination?.route }
         }
 
 
@@ -84,23 +95,38 @@ fun ECitizenApp(
             containerColor = Color.Transparent,
             contentColor = MaterialTheme.colorScheme.onBackground,
             topBar = {
-                if (shouldShowBottomBar)
+                if (shouldShowAppBar)
                     CenterAlignedTopAppBar(
                         navigationIcon = {
                             Image(
-                                modifier = Modifier.size(45.dp).padding(start = 16.dp),
+                                modifier = Modifier
+                                    .size(45.dp)
+                                    .padding(start = 16.dp),
                                 painter = painterResource(id = R.drawable.india_ashoka),
-                                contentDescription =null
+                                contentDescription = null
                             )
                         },
                         title = {
                             Text(
                                 text = "Khandela Nagar Palika",
-                                style = MaterialTheme.typography.titleMedium.copy(fontFamily = FontFamily.Serif)
+                                style = MaterialTheme.typography.titleSmall.copy(fontFamily = FontFamily.Serif)
                             )
                         },
                         actions = {
+
+                            IconButton(onClick = {
+                                appState.setShowAppLocaleDialog(
+                                    true
+                                )
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Outlined.GTranslate,
+                                    contentDescription = null
+                                )
+                            }
+
                             IconButton(onClick = {}) {
+
                                 Icon(
                                     painter = painterResource(id = R.drawable.baseline_notifications_24),
                                     contentDescription = null

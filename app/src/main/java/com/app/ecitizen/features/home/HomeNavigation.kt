@@ -15,10 +15,14 @@ fun NavController.navigateToHome(navOptions: NavOptions? = null) {
 
 fun NavGraphBuilder.homeScreen(
     navigateToService: (Service) -> Unit,
+    navigateToRegisterComplaint: () -> Unit,
+    navigateToViewComplaints: () -> Unit
 ) {
     composable(route = homeNavigationRoute) {
         HomeScreenRoute(
-            navigateToService = navigateToService
+            navigateToService = navigateToService,
+            navigateToRegisterComplaint = navigateToRegisterComplaint,
+            navigateToViewComplaints = navigateToViewComplaints
         )
     }
 }

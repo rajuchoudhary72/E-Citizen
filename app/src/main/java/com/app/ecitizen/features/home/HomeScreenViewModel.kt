@@ -2,13 +2,15 @@ package com.app.ecitizen.features.home
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.ecitizen.R
 import com.app.ecitizen.ui.theme.Blue80
 import com.app.ecitizen.ui.theme.DarkGreen80
-import com.app.ecitizen.ui.theme.DarkGreenGray90
 import com.app.ecitizen.ui.theme.DarkPurpleGray90
 import com.app.ecitizen.ui.theme.Green80
 import com.app.ecitizen.ui.theme.Orange80
@@ -25,6 +27,9 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeScreenViewModel @Inject constructor() : ViewModel() {
 
+    var shouldShowComplaintDialog by mutableStateOf(false)
+        private set
+
     val homeUiState: StateFlow<HomeUiState> = MutableStateFlow(
         HomeUiState.Success(
             bannerImages = mutableListOf<String>("", "", "", ""),
@@ -36,6 +41,11 @@ class HomeScreenViewModel @Inject constructor() : ViewModel() {
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = HomeUiState.Loading
         )
+
+
+    fun setShowComplaintDialog(show: Boolean) {
+        shouldShowComplaintDialog = show
+    }
 
 }
 

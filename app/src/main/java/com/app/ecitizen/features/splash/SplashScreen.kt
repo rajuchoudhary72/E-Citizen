@@ -9,7 +9,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
@@ -23,7 +22,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.app.ecitizen.R
 import com.app.ecitizen.ui.theme.ECitizenTheme
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @Composable
 fun SplashScreenRoute(
@@ -31,7 +29,7 @@ fun SplashScreenRoute(
     splashViewModel: SplashViewModel = hiltViewModel(),
 ) {
 
-    LaunchedEffect(true){
+    LaunchedEffect(true) {
         delay(2000)
         closeSplashScreen()
     }

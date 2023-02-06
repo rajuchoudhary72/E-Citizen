@@ -16,6 +16,7 @@ fun NavController.navigateToNoticeBoard() {
 fun NavController.navigateToNotice() {
     this.navigate(noticeScreenNavigationRoute)
 }
+
 fun NavGraphBuilder.noticeBoardScreen(
     onBackClick: () -> Unit,
     navigateToNotice: () -> Unit,

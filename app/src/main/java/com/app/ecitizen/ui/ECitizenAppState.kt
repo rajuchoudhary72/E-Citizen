@@ -7,15 +7,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.core.os.trace
 import androidx.navigation.NavDestination
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
+import com.app.ecitizen.features.auth.navigateToLoginScreen
 import com.app.ecitizen.features.home.homeNavigationRoute
 import com.app.ecitizen.features.home.navigateToHome
+import com.app.ecitizen.features.profile.navigateToProfile
+import com.app.ecitizen.features.profile.profileScreenNavigationRoute
 import com.app.ecitizen.features.splash.splashScreenNavigationRoute
 import com.app.ecitizen.ui.navigation.TopLevelDestination
 import com.app.ecitizen.utils.NetworkMonitor
@@ -55,7 +57,17 @@ class ECitizenAppState(
     )
 
     val shouldShowBottomBar: Boolean
-       get() = navController.currentDestination?.route?.contains(homeNavigationRoute) ?: false
+        @Composable get() = mutableListOf(
+           homeNavigationRoute,
+           profileScreenNavigationRoute
+        ).any { route -> route == navController.currentDestination?.route }
+
+
+    val shouldShowAppBar: Boolean
+        @Composable get() = mutableListOf(
+           homeNavigationRoute
+        ).any { route -> route == navController.currentDestination?.route }
+
 
 
     /**
@@ -72,28 +84,33 @@ class ECitizenAppState(
      * @param topLevelDestination: The destination the app needs to navigate to.
      */
     fun navigateToTopLevelDestination(topLevelDestination: TopLevelDestination) {
-        trace("Navigation: ${topLevelDestination.name}") {
-            val topLevelNavOptions = navOptions {
-                // Pop up to the start destination of the graph to
-                // avoid building up a large stack of destinations
-                // on the back stack as users select items
-                popUpTo(navController.graph.findStartDestination().id) {
-                    saveState = true
-                }
-                // Avoid multiple copies of the same destination when
-                // reselecting the same item
-                launchSingleTop = true
-                // Restore state when reselecting a previously selected item
-                restoreState = true
+
+        val topLevelNavOptions = navOptions {
+            // Pop up to the start destination of the graph to
+            // avoid building up a large stack of destinations
+            // on the back stack as users select items
+            popUpTo(navController.graph.findStartDestination().id) {
+                saveState = true
+            }
+            // Avoid multiple copies of the same destination when
+            // reselecting the same item
+            launchSingleTop = true
+            // Restore state when reselecting a previously selected item
+            restoreState = true
+        }
+
+        when (topLevelDestination) {
+            TopLevelDestination.HOME -> {
+                navController.navigateToHome(topLevelNavOptions)
             }
 
-            when (topLevelDestination) {
-                TopLevelDestination.HOME -> {}
-                TopLevelDestination.COMMISSIONER_OFFICE -> {}
-                TopLevelDestination.CONTACT_US -> {}
-                TopLevelDestination.PROFILE -> {}
+            TopLevelDestination.COMMISSIONER_OFFICE -> {}
+            TopLevelDestination.CONTACT_US -> {}
+            TopLevelDestination.PROFILE -> {
+                navController.navigateToProfile(topLevelNavOptions)
             }
         }
+
     }
 
 
@@ -110,7 +127,7 @@ class ECitizenAppState(
             // Pop up to the start destination of the graph to
             // avoid building up a large stack of destinations
             // on the back stack as users select items
-            popUpTo(splashScreenNavigationRoute){
+            popUpTo(splashScreenNavigationRoute) {
                 saveState = true
                 inclusive = true
             }
@@ -120,7 +137,8 @@ class ECitizenAppState(
             // Restore state when reselecting a previously selected item
             restoreState = true
         }
-        navController.navigateToHome(navOptions)
+       // navController.navigateToHome(navOptions)
+        navController.navigateToLoginScreen(navOptions)
     }
 }
 

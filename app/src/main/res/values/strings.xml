@@ -35,6 +35,21 @@
     <string name="advertisements">Advertisements</string>
     <string name="telephone_directory">Telephone Directory</string>
     <string name="about_us">About Us</string>
+    <string name="post_a_complaint">Post a Complaint</string>
+    <string name="view_complaint">View Complaint</string>
+    <string name="ward_number">Ward Number</string>
+    <string name="enter">Enter here…</string>
+    <string name="house_number">House Number</string>
+    <string name="colony_name">Colony Name</string>
+    <string name="street_name">Street Name</string>
+    <string name="note">Note</string>
+    <string name="note_placeholder">Add more information about complaint</string>
+    <string name="photo">Photo</string>
+    <string name="select_photo">Select Photo</string>
+    <string name="yout_complaints">Your Complaints</string>
+    <string name="phone_book">Phone Book</string>
+    <string name="full_name">Full Name</string>
+    <string name="logout">Logout</string>
 
 
 </resources>
