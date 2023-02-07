@@ -1,15 +1,16 @@
 package com.app.ecitizen.features.advertisement
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
@@ -21,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,16 +32,24 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
 import com.app.ecitizen.R
+import com.app.ecitizen.data.network.dto.AdvertisementDto
+import com.app.ecitizen.model.ScreenEvent
+import com.app.ecitizen.ui.components.LoadingWheel
 import com.app.ecitizen.ui.theme.ECitizenTheme
+import com.app.ecitizen.utils.toScreenEvent
 
 @Composable
 fun AdvertisementScreenRoute(
     onBackClick: () -> Unit,
     advertisementViewModel: AdvertisementViewModel = hiltViewModel(),
 ) {
+    val uiState by advertisementViewModel.uiState.collectAsStateWithLifecycle()
     AdvertisementScreen(
-        onBackClick = onBackClick
+        onBackClick = onBackClick,
+        uiState = uiState
     )
 }
 
@@ -47,6 +57,7 @@ fun AdvertisementScreenRoute(
 @Composable
 fun AdvertisementScreen(
     onBackClick: () -> Unit,
+    uiState: AdvertisementScreenUiState,
 ) {
 
     Scaffold(
@@ -69,24 +80,81 @@ fun AdvertisementScreen(
             )
         },
     ) { padding ->
-        LazyColumn(
-            modifier = Modifier.padding(padding),
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
+        when (uiState) {
+            is AdvertisementScreenUiState.Error -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(20.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    when (val event = uiState.appError!!.toScreenEvent()) {
+                        is ScreenEvent.ShowSnackbar.MessageResId -> {
+                            Text(text = stringResource(id = event.resId))
+                        }
 
-            items(10) {
-                AdvertisementCardItem()
+                        is ScreenEvent.ShowSnackbar.MessageString -> {
+                            Text(text = event.value)
+                        }
+
+                        else -> {
+                            Text(text = stringResource(id = R.string.error_unknown))
+                        }
+                    }
+                }
+
+
             }
 
+            AdvertisementScreenUiState.Loading -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(20.dp),
+                    contentAlignment = Alignment.Center
+
+                ) {
+                    LoadingWheel(contentDesc = stringResource(id = R.string.loading))
+                }
+            }
+
+            is AdvertisementScreenUiState.Success -> {
+
+                if (uiState.advertisements.isEmpty()) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(20.dp),
+
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(text = "No data found!")
+                    }
+
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.padding(padding),
+                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        items(uiState.advertisements) { advertisement ->
+                            AdvertisementCardItem(advertisement)
+                        }
+                    }
+                }
+
+            }
         }
+
     }
 
 
 }
 
 @Composable
-fun AdvertisementCardItem() {
+fun AdvertisementCardItem(
+    advertisement: AdvertisementDto
+) {
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
@@ -104,9 +172,12 @@ fun AdvertisementCardItem() {
                 verticalAlignment = Alignment.Top
             ) {
 
-                Image(
-                    modifier = Modifier.size(height = 100.dp, width = 80.dp).clip(RoundedCornerShape(10.dp)),
-                    painter = painterResource(id = R.drawable.demo_img),
+                AsyncImage(
+                    model = "https://aapnokhandela.com${advertisement.basePath}${advertisement.file}",
+                    modifier = Modifier
+                        .size(height = 100.dp, width = 80.dp)
+                        .clip(RoundedCornerShape(10.dp)),
+
                     contentDescription = null,
                     contentScale = ContentScale.Crop
                 )
@@ -119,18 +190,20 @@ fun AdvertisementCardItem() {
                     Text(
                         modifier = Modifier
                             .padding(end = 10.dp),
-                        text = "General Notice",
-                        style = MaterialTheme.typography.titleMedium
+                        text = advertisement.subject ?: "",
+                        style = MaterialTheme.typography.titleLarge
                     )
 
-                    Text(
-                        text = "A sample video is given below to get an idea about what we are going to do in this article.",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
+                    if (advertisement.notes.isNullOrEmpty().not()) {
+                        Text(
+                            text = advertisement.notes ?: "",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
 
                     Text(
                         modifier = Modifier,
-                        text = "12 Jan 2023",
+                        text = advertisement.createdAt,
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
@@ -145,7 +218,8 @@ fun AdvertisementCardItem() {
 fun NoticeScreenPreview() {
     ECitizenTheme {
         AdvertisementScreen(
-            onBackClick = {}
+            onBackClick = {},
+            uiState = AdvertisementScreenUiState.Loading
         )
     }
 }

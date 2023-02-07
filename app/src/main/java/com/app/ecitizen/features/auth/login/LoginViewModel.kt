@@ -1,31 +1,74 @@
 package com.app.ecitizen.features.auth.login
 
+
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.app.ecitizen.features.auth.loginNavigationRoute
+import com.app.ecitizen.model.ScreenEvent
+import com.app.ecitizen.model.repository.AuthRepository
+import com.app.ecitizen.utils.stringRes
+import com.app.ecitizen.utils.toLoadingState
+import com.app.ecitizen.utils.toScreenEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor() : ViewModel() {
-    private val _mobileNumber = MutableStateFlow("9787878787")
-    val mobileNumber = _mobileNumber.asStateFlow()
+class LoginViewModel @Inject constructor(
+    private val authRepository: AuthRepository
+) : ViewModel() {
 
-    val isMobileValid = _mobileNumber
-        .map { it.length == 10 }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = false
-        )
+    private val _screenEvent = MutableSharedFlow<ScreenEvent>()
+    val screenEvent = _screenEvent.asSharedFlow()
+    var mobileNumber: String by mutableStateOf("")
+        private set
+
+    var isLoading: Boolean by mutableStateOf(false)
+        private set
+
 
     fun updateMobileNumber(mobileNumber: String) {
-        _mobileNumber.update { mobileNumber }
+        this.mobileNumber = mobileNumber
     }
 
+    fun sendOtp() {
+        viewModelScope.launch {
+            authRepository
+                .sendOtp(mobileNumber)
+                .toLoadingState()
+                .flowOn(Dispatchers.IO)
+                .collectLatest { state ->
+                    isLoading = state.isLoading
+
+                    state.getAppErrorIfExists()?.toScreenEvent()?.let { screenEvent ->
+                        _screenEvent.emit(
+                            screenEvent
+                        )
+                    }
+
+                    state.getValueOrNull()?.let { message ->
+                        _screenEvent.emit(
+                            ScreenEvent.ShowSnackbar.MessageString(
+                                message
+                            )
+                        )
+                        _screenEvent.emit(ScreenEvent.Navigate(loginNavigationRoute))
+                    }
+                }
+        }
+    }
+
+}
+
+sealed interface ErrorMessage {
+    data class ErrorMessageId(val id: Int) : ErrorMessage
+    data class MessageValue(val value: String) : ErrorMessage
 }

@@ -1,6 +1,7 @@
 package com.app.ecitizen.features.auth
 
 import android.net.Uri
+import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -29,11 +30,14 @@ internal class OtpVerificationArgs(val mobileNumber: String) {
 }
 
 fun NavGraphBuilder.loginScreen(
+    snackbarHostState: SnackbarHostState,
     navigateToVerifyOtp: (String) -> Unit,
-    openAppLocaleSettings: () -> Unit
+    openAppLocaleSettings: () -> Unit,
+
 ) {
     composable(route = loginNavigationRoute) {
         LoginRoute(
+            snackbarHostState=snackbarHostState,
             navigateToVerifyOtp = navigateToVerifyOtp,
             openAppLocaleSettings = openAppLocaleSettings
         )
@@ -41,6 +45,7 @@ fun NavGraphBuilder.loginScreen(
 }
 
 fun NavGraphBuilder.otpVerificationScreen(
+    snackbarHostState: SnackbarHostState,
     navigateToHome: () -> Unit,
     onBackClick: () -> Unit,
 ) {
@@ -48,6 +53,7 @@ fun NavGraphBuilder.otpVerificationScreen(
         route = "$otpVerificationNavigationRoute/{$mobileNumberArg}"
     ) {
         OtpVerificationRoute(
+            snackbarHostState=snackbarHostState,
             navigateToHome = navigateToHome,
             onBackClick = onBackClick
         )

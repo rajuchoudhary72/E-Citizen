@@ -5,7 +5,9 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,10 +16,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalTextStyle
@@ -27,6 +35,10 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -72,7 +84,7 @@ fun RegisterComplaintRoute(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun RegisterComplaintScreen(
     onBackClick: () -> Unit,
@@ -119,8 +131,12 @@ fun RegisterComplaintScreen(
             contentPadding = PaddingValues(16.dp)
         ) {
 
+
             item {
+                ComplaintTypeTextField()
+
                 Text(
+                    modifier = Modifier.padding(top = 8.dp),
                     text = stringResource(R.string.ward_number),
                     style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium)
                 )
@@ -219,11 +235,11 @@ fun RegisterComplaintScreen(
                     shape = MaterialTheme.shapes.extraSmall
                 ) {
                     if (image != null) {
-                       AsyncImage(
-                           model = image,
-                           contentDescription = null,
-                           contentScale = ContentScale.Crop
-                       )
+                        AsyncImage(
+                            model = image,
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop
+                        )
                     } else {
                         Column(
                             modifier = Modifier
@@ -256,6 +272,70 @@ fun RegisterComplaintScreen(
         }
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ComplaintTypeTextField() {
+
+    val options = listOf("Option 1", "Option 2", "Option 3", "Option 4", "Option 5")
+    var expanded by remember { mutableStateOf(false) }
+    var selectedOptionText by remember { mutableStateOf(options[0]) }
+// We want to react on tap/press on TextField to show menu
+    Box(
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+
+        Column {
+            Text(
+                modifier = Modifier,
+                text = stringResource(R.string.complaint_type),
+                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Medium)
+            )
+            OutlinedTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 5.dp)
+                    .clickable { expanded = expanded.not() },
+                value = selectedOptionText,
+                placeholder = { Text(text = stringResource(id = R.string.complaint_type)) },
+                onValueChange = {},
+                readOnly = true,
+                enabled = false,
+                trailingIcon = {
+                    Icon(
+                        imageVector = if (expanded) Icons.Default.ArrowDropUp else Icons.Default.ArrowDropDown,
+                        contentDescription = null
+                    )
+                },
+            )
+        }
+
+
+        DropdownMenu(
+            modifier = Modifier,
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+        ) {
+            options.forEach { selectionOption ->
+                DropdownMenuItem(
+                    modifier = Modifier,
+                    text = {
+                        Text(
+
+                            text = selectionOption
+                        )
+                    },
+                    onClick = {
+                        selectedOptionText = selectionOption
+                        expanded = false
+                    },
+                    contentPadding = PaddingValues(10.dp),
+                )
+            }
+        }
+    }
+}
+
 
 @Preview(showBackground = true)
 @Composable

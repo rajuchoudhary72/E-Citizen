@@ -87,6 +87,16 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
     kapt(libs.hilt.compiler)
 
+    implementation(libs.androidx.datastore)
+    implementation(libs.androidx.datastore.core)
+
+    implementation ("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.9")
+    implementation(libs.retrofit.core)
+    implementation(libs.retrofit.converter.gson)
+    implementation ("com.google.code.gson:gson:2.10.1")
+
+    implementation(libs.kotlinx.coroutines.android)
+
 
 
     // custom declaration for latest versions of material 3 and adaptive accompanist

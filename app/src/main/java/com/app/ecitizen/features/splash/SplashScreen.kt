@@ -1,9 +1,10 @@
 package com.app.ecitizen.features.splash
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -20,18 +21,33 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.app.ecitizen.R
+import com.app.ecitizen.ui.components.LoadingWheel
 import com.app.ecitizen.ui.theme.ECitizenTheme
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun SplashScreenRoute(
-    closeSplashScreen: () -> Unit,
+    navigateToLogin: () -> Unit,
+    navigateToHome: () -> Unit,
     splashViewModel: SplashViewModel = hiltViewModel(),
 ) {
 
+
     LaunchedEffect(true) {
-        delay(2000)
-        closeSplashScreen()
+        splashViewModel.uiState.collectLatest { uiState ->
+            delay(3000)
+            when(uiState){
+                SplashScreenUiState.Loading -> {}
+                is SplashScreenUiState.Success -> {
+                    if(uiState.userDto!=null){
+                        navigateToHome()
+                    }else{
+                        navigateToLogin()
+                    }
+                }
+            }
+        }
     }
 
     SplashScreen(
@@ -41,23 +57,26 @@ fun SplashScreenRoute(
 }
 
 @Composable
-fun SplashScreen(
-) {
-    Box(
+fun SplashScreen() {
+
+
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .paint(
                 painter = painterResource(id = R.drawable.app_background),
                 contentScale = ContentScale.Crop
             ),
-        contentAlignment = Alignment.Center
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier.weight(1f),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
             Image(
-                painter = painterResource(id = R.drawable.india_ashoka),
+                painter = painterResource(id = R.drawable.ic_splash_logo),
                 contentDescription = null
             )
 
@@ -75,7 +94,16 @@ fun SplashScreen(
         }
 
 
+        LoadingWheel(
+            modifier = Modifier
+                .navigationBarsPadding()
+                .padding(20.dp),
+            contentDesc = stringResource(R.string.loading)
+        )
+
+
     }
+
 
 }
 
