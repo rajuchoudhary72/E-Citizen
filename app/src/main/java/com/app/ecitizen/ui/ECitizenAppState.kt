@@ -13,7 +13,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
+import com.app.ecitizen.features.about.aboutUsNavigationRoute
+import com.app.ecitizen.features.about.navigateToAboutUs
 import com.app.ecitizen.features.auth.navigateToLoginScreen
+import com.app.ecitizen.features.commOffice.commOfficeNavigationRoute
+import com.app.ecitizen.features.commOffice.navigateToCommOffice
 import com.app.ecitizen.features.home.homeNavigationRoute
 import com.app.ecitizen.features.home.navigateToHome
 import com.app.ecitizen.features.profile.navigateToProfile
@@ -59,7 +63,9 @@ class ECitizenAppState(
     val shouldShowBottomBar: Boolean
         @Composable get() = mutableListOf(
             homeNavigationRoute,
-            profileScreenNavigationRoute
+            profileScreenNavigationRoute,
+            aboutUsNavigationRoute,
+            commOfficeNavigationRoute
         ).any { route -> route == navController.currentDestination?.route }
 
 
@@ -102,9 +108,12 @@ class ECitizenAppState(
             TopLevelDestination.HOME -> {
                 navController.navigateToHome(topLevelNavOptions)
             }
-
-            TopLevelDestination.COMMISSIONER_OFFICE -> {}
-            TopLevelDestination.CONTACT_US -> {}
+            TopLevelDestination.COMMISSIONER_OFFICE -> {
+                navController.navigateToCommOffice(topLevelNavOptions)
+            }
+            TopLevelDestination.CONTACT_US -> {
+                navController.navigateToAboutUs(topLevelNavOptions)
+            }
             TopLevelDestination.PROFILE -> {
                 navController.navigateToProfile(topLevelNavOptions)
             }

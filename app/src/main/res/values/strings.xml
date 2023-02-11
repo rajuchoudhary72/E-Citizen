@@ -70,6 +70,25 @@
     <string name="scheme">Scheme</string>
     <string name="news">News</string>
     <string name="mobile_validation_msg">Please enter a valid 10 digit mobile number.</string>
+    <string name="download">Download</string>
+
+
+    <string name="service1">Change of land use - 90A</string>
+    <string name="service2">Trade Licence</string>
+    <string name="service3">Renew Trade Licence</string>
+    <string name="service4">Sewer Connection</string>
+    <string name="service5">Fire NOC</string>
+    <string name="service6">Mutation name Transfer</string>
+    <string name="service7">Signature Licence</string>
+    <string name="service8">Property tax (UD TAX)</string>
+    <string name="service9">SUB Division &amp; Reconstitution</string>
+    <string name="service10">Property ID</string>
+    <string name="service11">lease Deposit</string>
+    <string name="service12">Leasedeed</string>
+    <string name="service13">Leasedeed Re-issue</string>
+    <string name="service14">Building Plan approval (LSG)</string>
+    <string name="service15">Birth -death Registration</string>
+    <string name="service16">Marriage Registration</string>
 
 
 </resources>

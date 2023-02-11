@@ -24,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -37,7 +38,7 @@ import com.app.ecitizen.ui.theme.ECitizenTheme
 @Composable
 fun NoticeBoardScreenRoute(
     onBackClick: () -> Unit,
-    navigateToNotice: () -> Unit,
+    navigateToNotice: (String) -> Unit,
     noticeBoardViewModel: NoticeBoardViewModel = hiltViewModel(),
 ) {
 
@@ -54,7 +55,7 @@ fun NoticeBoardScreenRoute(
 @Composable
 fun NoticeBoardScreen(
     onBackClick: () -> Unit,
-    navigateToNotice: () -> Unit,
+    navigateToNotice: (String) -> Unit,
     notices: MutableList<Notice>,
 ) {
 
@@ -78,6 +79,7 @@ fun NoticeBoardScreen(
             )
         },
     ) { padding ->
+
         LazyVerticalGrid(
             modifier = Modifier
                 .fillMaxSize()
@@ -88,10 +90,10 @@ fun NoticeBoardScreen(
             contentPadding = PaddingValues(16.dp)
         ) {
 
-            items(notices, key = { it.name }) { notice ->
+            items(notices, key = { it.name }) { notice: Notice ->
                 NoticeBoardCardItem(
                     notice = notice,
-                    onClickNotice = navigateToNotice
+                    onClickNotice = { navigateToNotice(notice.endPoint) }
                 )
             }
 
@@ -120,7 +122,7 @@ fun NoticeBoardCardItem(
         ) {
             Image(
                 modifier = Modifier.size(60.dp),
-                imageVector = notice.icon,
+                painter = painterResource(id = notice.icon),
                 contentDescription = null
             )
             Text(

@@ -4,7 +4,11 @@ import com.app.ecitizen.data.datastore.ECitizenPreferencesDataStore
 import com.app.ecitizen.data.network.RetrofitService
 import com.app.ecitizen.data.network.dto.AdvertisementDto
 import com.app.ecitizen.data.network.dto.AppFront
+import com.app.ecitizen.data.network.dto.DownloadDto
+import com.app.ecitizen.data.network.dto.NoticeDto
 import com.app.ecitizen.data.network.dto.NotificationDto
+import com.app.ecitizen.data.network.dto.PlaceDto
+import com.app.ecitizen.data.network.dto.ServiceDto
 import com.app.ecitizen.data.network.dto.SliderImage
 import com.app.ecitizen.data.network.dto.UserDto
 import com.app.ecitizen.model.repository.AppRepository
@@ -42,5 +46,21 @@ class AppRepositoryImpl @Inject constructor(
 
     override fun getSliderImages(): Flow<List<SliderImage>> {
         return retrofitService.getSliderImage().map { it.data?: emptyList() }
+    }
+
+    override fun getNotices(type: String): Flow<List<NoticeDto>> {
+        return retrofitService.getNotice(type).map { it.data?: emptyList() }
+    }
+
+    override fun getDownloads(): Flow<List<DownloadDto>> {
+        return retrofitService.getDownloads().map { it.data?: emptyList() }
+    }
+
+    override fun getImportantPlaces(search: String): Flow<List<PlaceDto>> {
+        return retrofitService.getImportantPlaces(search).map { it.data?: emptyList() }
+    }
+
+    override fun getServicesData(): Flow<ServiceDto> {
+        return retrofitService.getServicesData().map { it.data?.first()!! }
     }
 }

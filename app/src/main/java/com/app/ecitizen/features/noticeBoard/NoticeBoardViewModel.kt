@@ -26,26 +26,31 @@ class NoticeBoardViewModel @Inject constructor(
 
 data class Notice(
     @StringRes val name: Int,
-    val icon: ImageVector,
+    val icon: Int,
+    val endPoint:String
 ) {
 
     companion object {
         val NOTICES = mutableListOf(
             Notice(
                 name = R.string.general_notice,
-                icon = Icons.TwoTone.Note,
+                icon = R.drawable.general_notice,
+                endPoint = "General notice"
             ),
             Notice(
                 name = R.string.suggestion,
-                icon = Icons.TwoTone.Info,
+                icon = R.drawable.notice_suggestion,
+                endPoint = "Suggession"
             ),
             Notice(
                 name = R.string.scheme,
-                icon = Icons.TwoTone.MedicalInformation,
+                icon = R.drawable.notice_scheme,
+                endPoint = "Scheme"
             ),
             Notice(
                 name = R.string.news,
-                icon = Icons.TwoTone.Newspaper,
+                icon = R.drawable.news,
+                endPoint = "News"
             ),
         )
     }

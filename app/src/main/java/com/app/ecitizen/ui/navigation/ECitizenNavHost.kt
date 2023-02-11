@@ -1,7 +1,5 @@
 package com.app.ecitizen.ui.navigation
 
-import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -9,12 +7,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.navOptions
 import com.app.ecitizen.R
+import com.app.ecitizen.features.about.aboutUs
+import com.app.ecitizen.features.about.navigateToAboutUs
 import com.app.ecitizen.features.advertisement.advertisementScreen
 import com.app.ecitizen.features.advertisement.navigateToAdvertisement
 import com.app.ecitizen.features.auth.loginScreen
 import com.app.ecitizen.features.auth.navigateToLoginScreen
 import com.app.ecitizen.features.auth.navigateToOtpVerification
 import com.app.ecitizen.features.auth.otpVerificationScreen
+import com.app.ecitizen.features.commOffice.commOffice
 import com.app.ecitizen.features.complaint.navigateToRegisterComplaint
 import com.app.ecitizen.features.complaint.navigateToViewComplaint
 import com.app.ecitizen.features.complaint.registerComplaintScreen
@@ -144,14 +145,21 @@ fun ECitizenNavHost(
                     R.string.telephone_directory -> {
                         navController().navigateToTelephoneDirectory()
                     }
+                    R.string.about_us -> {
+                        navController().navigateToAboutUs()
+                    }
                 }
 
             })
 
+        aboutUs (onBackClick)
+
+        commOffice(onBackClick)
+
         profileScreen(onBackClick)
 
         noticeBoardScreen(onBackClick = onBackClick, navigateToNotice = {
-            navController().navigateToNotice()
+            navController().navigateToNotice(it)
         })
 
         serviceScreen(

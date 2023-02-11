@@ -40,6 +40,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import com.app.ecitizen.R
+import com.app.ecitizen.features.about.aboutUsNavigationRoute
+import com.app.ecitizen.features.commOffice.commOfficeNavigationRoute
 import com.app.ecitizen.features.home.homeNavigationRoute
 import com.app.ecitizen.features.localization.AppLocaleDialog
 import com.app.ecitizen.features.notification.navigateToNotification
@@ -80,7 +82,9 @@ fun ECitizenApp(
 
         shouldShowBottomBar = mutableListOf(
             homeNavigationRoute,
-            profileScreenNavigationRoute
+            profileScreenNavigationRoute,
+            aboutUsNavigationRoute,
+            commOfficeNavigationRoute
         ).any { route -> route == appState.navController.currentDestination?.route }
     }
 
