@@ -13,8 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.ScaffoldState
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
@@ -22,20 +20,15 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.paint
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
@@ -50,47 +43,38 @@ import com.app.ecitizen.ui.theme.ECitizenTheme
 import kotlinx.coroutines.flow.collectLatest
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginRoute(
-    modifier: Modifier = Modifier,
     navigateToVerifyOtp: (String) -> Unit,
     openAppLocaleSettings: () -> Unit,
     loginViewModel: LoginViewModel = hiltViewModel(),
-    snackbarHostState: SnackbarHostState
+    snackbarHostState: () -> SnackbarHostState
 ) {
-
-    var isMobileNumberValid by remember {
-        mutableStateOf(false)
-    }
 
     val context = LocalContext.current
 
     LaunchedEffect(true) {
         loginViewModel.screenEvent.collectLatest { event ->
-            when(event){
+            when (event) {
                 is ScreenEvent.Navigate -> {
                     navigateToVerifyOtp(loginViewModel.mobileNumber)
                 }
+
                 is ScreenEvent.ShowSnackbar.MessageResId -> {
-                    snackbarHostState.showSnackbar(context.getString(event.resId))
+                    snackbarHostState().showSnackbar(context.getString(event.resId))
                 }
+
                 is ScreenEvent.ShowSnackbar.MessageString -> {
-                    snackbarHostState.showSnackbar(message = event.value)
+                    snackbarHostState().showSnackbar(message = event.value)
                 }
             }
         }
     }
 
-    LaunchedEffect(loginViewModel.mobileNumber){
-        isMobileNumberValid = loginViewModel.mobileNumber.length == 10
-    }
 
     LoginScreen(
-        modifier = modifier,
-        mobileNumber = loginViewModel.mobileNumber,
+        mobileNumber = { loginViewModel.mobileNumber },
         updateMobileNumber = loginViewModel::updateMobileNumber,
-        isMobileValid = isMobileNumberValid,
         sendOtp = loginViewModel::sendOtp,
         openAppLocaleSettings = openAppLocaleSettings,
         isOtpSendLoading = loginViewModel.isLoading
@@ -98,24 +82,21 @@ fun LoginRoute(
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun LoginScreen(
-    modifier: Modifier,
-    mobileNumber: String,
+    mobileNumber: () -> String,
     updateMobileNumber: (String) -> Unit,
-    isMobileValid: Boolean,
     sendOtp: () -> Unit,
     openAppLocaleSettings: () -> Unit,
     isOtpSendLoading: Boolean
 ) {
+
+    val keyboard = LocalSoftwareKeyboardController.current
+
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
-            .paint(
-                painter = painterResource(id = R.drawable.app_background),
-                contentScale = ContentScale.Crop
-            )
             .systemBarsPadding()
             .padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -148,7 +129,7 @@ fun LoginScreen(
         Image(
             modifier = Modifier.size(200.dp),
             painter = painterResource(id = R.drawable.ic_logo_big),
-            contentDescription = null
+            contentDescription = "null"
         )
 
         Text(
@@ -167,45 +148,12 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.height(30.dp))
 
-        OutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text(text = stringResource(R.string.mobile_number)) },
-            value = mobileNumber,
-            onValueChange = updateMobileNumber,
-            textStyle = MaterialTheme.typography.titleMedium.copy(
-                fontFamily = FontFamily.Serif,
-                fontWeight = FontWeight.Medium
-            ),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-            singleLine = true,
-            leadingIcon = {
-                Row(
-                    modifier = Modifier.padding(horizontal = 10.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.indian_flag),
-                        contentDescription = null
-                    )
-                    Spacer(modifier = Modifier.width(5.dp))
-                    Text(
-                        text = "+91",
-                        style = MaterialTheme.typography.titleMedium.copy(fontFamily = FontFamily.Serif)
-                    )
-                    Spacer(modifier = Modifier.width(5.dp))
-                    Divider(
-                        modifier = Modifier
-                            .height(54.dp)
-                            .width(1.dp),
-                        color = MaterialTheme.colorScheme.outline
-                    )
-                }
-
-            }
+        MobileTextField(
+            mobileNumber = mobileNumber,
+            updateMobileNumber = updateMobileNumber
         )
 
-
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         if (isOtpSendLoading) {
             CircularProgressIndicator(
@@ -218,14 +166,66 @@ fun LoginScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
-                onClick = sendOtp,
+                onClick = {
+                    keyboard?.hide()
+                    sendOtp()
+                },
                 shape = MaterialTheme.shapes.extraSmall,
-                enabled = isMobileValid
             ) {
                 Text(text = stringResource(R.string.continue_))
             }
         }
     }
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun MobileTextField(
+    mobileNumber: () -> String,
+    updateMobileNumber: (String) -> Unit
+) {
+
+    /* var mobileNumber by rememberSaveable(stateSaver = TextFieldValue.Saver) {
+         mutableStateOf(TextFieldValue("", TextRange(0, 10)))
+
+     }*/
+
+    OutlinedTextField(
+        modifier = Modifier.fillMaxWidth(),
+        placeholder = { Text(text = stringResource(R.string.mobile_number)) },
+        value = mobileNumber(),
+        onValueChange = updateMobileNumber,
+        textStyle = MaterialTheme.typography.titleMedium.copy(
+            fontFamily = FontFamily.Serif,
+            fontWeight = FontWeight.Medium
+        ),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+        singleLine = true,
+        leadingIcon = {
+            Row(
+                modifier = Modifier.padding(horizontal = 10.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.indian_flag),
+                    contentDescription = null
+                )
+                Spacer(modifier = Modifier.width(5.dp))
+                Text(
+                    text = "+91",
+                    style = MaterialTheme.typography.titleMedium.copy(fontFamily = FontFamily.Serif)
+                )
+                Spacer(modifier = Modifier.width(5.dp))
+                Divider(
+                    modifier = Modifier
+                        .height(54.dp)
+                        .width(1.dp),
+                    color = MaterialTheme.colorScheme.outline
+                )
+            }
+
+        }
+    )
 }
 
 
@@ -235,10 +235,8 @@ fun LoginScreenPreview() {
     ECitizenTheme {
         ECitizenTheme {
             LoginScreen(
-                modifier = Modifier,
-                mobileNumber = "9876543210",
+                mobileNumber = { "" },
                 updateMobileNumber = {},
-                isMobileValid = true,
                 openAppLocaleSettings = {},
                 sendOtp = {},
                 isOtpSendLoading = false

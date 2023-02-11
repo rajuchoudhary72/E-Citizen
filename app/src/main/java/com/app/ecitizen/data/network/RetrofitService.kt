@@ -3,7 +3,9 @@ package com.app.ecitizen.data.network
 import com.app.ecitizen.data.network.dto.AdvertisementDto
 import com.app.ecitizen.data.network.dto.AppFront
 import com.app.ecitizen.data.network.dto.NetworkResponse
+import com.app.ecitizen.data.network.dto.NotificationDto
 import com.app.ecitizen.data.network.dto.OtpResponseDto
+import com.app.ecitizen.data.network.dto.SliderImage
 import com.app.ecitizen.data.network.dto.UserDto
 import kotlinx.coroutines.flow.Flow
 import retrofit2.http.Field
@@ -33,4 +35,10 @@ interface RetrofitService {
 
     @GET("api/get-advertisment")
     fun getAdvertisements(): Flow<NetworkResponse<List<AdvertisementDto>>>
+
+    @GET("api/get_public_notification")
+    fun getNotifications(): Flow<NetworkResponse<List<NotificationDto>>>
+
+    @GET("api/sliders-list")
+    fun getSliderImage(): Flow<NetworkResponse<List<SliderImage>>>
 }

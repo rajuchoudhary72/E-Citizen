@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material3.Card
@@ -20,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -28,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.app.ecitizen.R
 import com.app.ecitizen.ui.theme.ECitizenTheme
 
@@ -37,9 +40,13 @@ fun NoticeBoardScreenRoute(
     navigateToNotice: () -> Unit,
     noticeBoardViewModel: NoticeBoardViewModel = hiltViewModel(),
 ) {
+
+    val notices by noticeBoardViewModel.notices.collectAsStateWithLifecycle()
+
     NoticeBoardScreen(
         onBackClick = onBackClick,
-        navigateToNotice = navigateToNotice
+        navigateToNotice = navigateToNotice,
+        notices = notices
     )
 }
 
@@ -48,6 +55,7 @@ fun NoticeBoardScreenRoute(
 fun NoticeBoardScreen(
     onBackClick: () -> Unit,
     navigateToNotice: () -> Unit,
+    notices: MutableList<Notice>,
 ) {
 
     Scaffold(
@@ -79,11 +87,14 @@ fun NoticeBoardScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             contentPadding = PaddingValues(16.dp)
         ) {
-            items(4) {
+
+            items(notices, key = { it.name }) { notice ->
                 NoticeBoardCardItem(
+                    notice = notice,
                     onClickNotice = navigateToNotice
                 )
             }
+
         }
     }
 
@@ -92,7 +103,8 @@ fun NoticeBoardScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoticeBoardCardItem(
-    onClickNotice: () -> Unit
+    onClickNotice: () -> Unit,
+    notice: Notice
 ) {
     Card(
         onClick = onClickNotice,
@@ -108,12 +120,12 @@ fun NoticeBoardCardItem(
         ) {
             Image(
                 modifier = Modifier.size(60.dp),
-                painter = painterResource(id = R.drawable.india_ashoka),
+                imageVector = notice.icon,
                 contentDescription = null
             )
             Text(
                 modifier = Modifier.padding(top = 10.dp),
-                text = "General Notice",
+                text = stringResource(id = notice.name),
                 style = MaterialTheme.typography.labelLarge,
                 textAlign = TextAlign.Center,
                 maxLines = 2
@@ -128,7 +140,8 @@ fun SplashScreenPreview() {
     ECitizenTheme {
         NoticeBoardScreen(
             onBackClick = {},
-            navigateToNotice = {}
+            navigateToNotice = {},
+            notices = Notice.NOTICES
         )
     }
 }

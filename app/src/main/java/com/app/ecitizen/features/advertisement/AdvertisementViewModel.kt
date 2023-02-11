@@ -1,12 +1,12 @@
 package com.app.ecitizen.features.advertisement
 
+import androidx.annotation.Keep
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.ecitizen.data.network.dto.AdvertisementDto
-import com.app.ecitizen.features.localization.AppLocaleUiState
 import com.app.ecitizen.model.AppError
 import com.app.ecitizen.model.LoadState
-import com.app.ecitizen.model.repository.AuthRepository
+import com.app.ecitizen.model.repository.AppRepository
 import com.app.ecitizen.utils.toAppError
 import com.app.ecitizen.utils.toLoadingState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AdvertisementViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+    private val authRepository: AppRepository
 ) : ViewModel() {
 
     val uiState:StateFlow<AdvertisementScreenUiState> = authRepository
@@ -49,7 +49,7 @@ class AdvertisementViewModel @Inject constructor(
 
 
 }
-
+@Keep
 sealed interface AdvertisementScreenUiState {
     object Loading : AdvertisementScreenUiState
 

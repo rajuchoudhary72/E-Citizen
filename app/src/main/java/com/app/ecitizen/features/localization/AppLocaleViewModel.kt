@@ -1,5 +1,6 @@
 package com.app.ecitizen.features.localization
 
+import androidx.annotation.Keep
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.ecitizen.model.AppLocale
@@ -26,7 +27,7 @@ class AppLocaleViewModel @Inject constructor(
         )
 }
 
-
+@Keep
 sealed interface AppLocaleUiState {
     object Loading : AppLocaleUiState
     data class Success(

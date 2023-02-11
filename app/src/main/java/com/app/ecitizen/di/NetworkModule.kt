@@ -65,7 +65,7 @@ class NetworkModule {
 
         return Retrofit
             .Builder()
-            .baseUrl("https://aapnokhandela.com/")
+            .baseUrl(BuildConfig.SERVER_URL)
             .client(okHttpClient)
             .addCallAdapterFactory(FlowCallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())

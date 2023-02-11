@@ -30,7 +30,7 @@ internal class OtpVerificationArgs(val mobileNumber: String) {
 }
 
 fun NavGraphBuilder.loginScreen(
-    snackbarHostState: SnackbarHostState,
+    snackbarHostState:() -> SnackbarHostState,
     navigateToVerifyOtp: (String) -> Unit,
     openAppLocaleSettings: () -> Unit,
 

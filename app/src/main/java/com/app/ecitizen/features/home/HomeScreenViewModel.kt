@@ -1,6 +1,7 @@
 package com.app.ecitizen.features.home
 
 import androidx.annotation.DrawableRes
+import androidx.annotation.Keep
 import androidx.annotation.StringRes
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -9,6 +10,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.ecitizen.R
+import com.app.ecitizen.data.network.dto.SliderImage
+import com.app.ecitizen.model.LoadState
+import com.app.ecitizen.model.repository.AppRepository
 import com.app.ecitizen.ui.theme.Blue80
 import com.app.ecitizen.ui.theme.DarkGreen80
 import com.app.ecitizen.ui.theme.DarkPurpleGray90
@@ -17,30 +21,53 @@ import com.app.ecitizen.ui.theme.Orange80
 import com.app.ecitizen.ui.theme.Purple80
 import com.app.ecitizen.ui.theme.Red80
 import com.app.ecitizen.ui.theme.Teal80
+import com.app.ecitizen.utils.toLoadingState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeScreenViewModel @Inject constructor() : ViewModel() {
-
+class HomeScreenViewModel @Inject constructor(
+    appRepository: AppRepository
+) : ViewModel() {
     var shouldShowComplaintDialog by mutableStateOf(false)
         private set
 
-    val homeUiState: StateFlow<HomeUiState> = MutableStateFlow(
-        HomeUiState.Success(
-            bannerImages = mutableListOf<String>("", "", "", ""),
-            services = Service.SERVICES
-        )
-    )
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = HomeUiState.Loading
-        )
+    val homeUiState: StateFlow<HomeUiState> =
+        appRepository
+            .getSliderImages()
+            .flowOn(Dispatchers.IO)
+            .toLoadingState()
+            .map { state ->
+                when (state) {
+                    is LoadState.Error -> {
+                        HomeUiState.Error(state.e)
+                    }
+
+                    is LoadState.Loaded -> {
+                        HomeUiState.Success(
+                            sliderImages = state.getValueOrNull() ?: emptyList(),
+                            services = Service.SERVICES
+                        )
+
+                    }
+
+                    LoadState.Loading -> {
+                        HomeUiState.Loading
+                    }
+                }
+
+            }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = HomeUiState.Loading
+            )
 
 
     fun setShowComplaintDialog(show: Boolean) {
@@ -112,14 +139,14 @@ data class Service(
 
 }
 
-
+@Keep
 sealed interface HomeUiState {
     object Loading : HomeUiState
 
     data class Error(val error: Throwable) : HomeUiState
 
     data class Success(
-        val bannerImages: List<String>,
+        val sliderImages: List<SliderImage>,
         val services: List<Service>
     ) : HomeUiState
 }

@@ -116,10 +116,6 @@ fun OtpVerificationScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .paint(
-                painter = painterResource(id = R.drawable.app_background),
-                contentScale = ContentScale.Crop
-            )
             .systemBarsPadding()
             .padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally

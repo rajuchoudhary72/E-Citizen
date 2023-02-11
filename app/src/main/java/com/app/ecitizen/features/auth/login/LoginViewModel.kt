@@ -1,6 +1,7 @@
 package com.app.ecitizen.features.auth.login
 
 
+import androidx.annotation.Keep
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -8,8 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.ecitizen.features.auth.loginNavigationRoute
 import com.app.ecitizen.model.ScreenEvent
-import com.app.ecitizen.model.repository.AuthRepository
-import com.app.ecitizen.utils.stringRes
+import com.app.ecitizen.model.repository.AppRepository
 import com.app.ecitizen.utils.toLoadingState
 import com.app.ecitizen.utils.toScreenEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,9 +21,11 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+import com.app.ecitizen.R
+
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+    private val authRepository: AppRepository
 ) : ViewModel() {
 
     private val _screenEvent = MutableSharedFlow<ScreenEvent>()
@@ -41,6 +43,14 @@ class LoginViewModel @Inject constructor(
 
     fun sendOtp() {
         viewModelScope.launch {
+
+            if(mobileNumber.length!=10){
+                _screenEvent.emit(
+                    ScreenEvent.ShowSnackbar.MessageResId(R.string.mobile_validation_msg)
+                )
+
+                return@launch
+            }
             authRepository
                 .sendOtp(mobileNumber)
                 .toLoadingState()
@@ -67,7 +77,7 @@ class LoginViewModel @Inject constructor(
     }
 
 }
-
+@Keep
 sealed interface ErrorMessage {
     data class ErrorMessageId(val id: Int) : ErrorMessage
     data class MessageValue(val value: String) : ErrorMessage

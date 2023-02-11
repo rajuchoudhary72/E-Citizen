@@ -1,6 +1,8 @@
 package com.app.ecitizen.data.network
 
 import android.content.Context
+import android.util.Log
+import com.app.ecitizen.BuildConfig
 import com.app.ecitizen.data.datastore.ECitizenPreferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.runBlocking
@@ -26,6 +28,9 @@ class AuthTokenInterceptor @Inject constructor(
         runBlocking {
             preferencesDataStore.getAuthToken()
         }?.let { authToken ->
+            if (BuildConfig.DEBUG) {
+                Log.e("Token", authToken)
+            }
             requestBuilder.addHeader("Authorization", authToken)
 
         }

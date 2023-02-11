@@ -1,11 +1,14 @@
 package com.app.ecitizen.features.notification
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material3.Card
@@ -16,14 +19,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.app.ecitizen.R
+import com.app.ecitizen.data.network.dto.NotificationDto
+import com.app.ecitizen.ui.components.ErrorAndLoadingScreen
 import com.app.ecitizen.ui.theme.ECitizenTheme
 
 @Composable
@@ -31,8 +40,10 @@ fun NotificationScreenRoute(
     onBackClick: () -> Unit,
     notificationViewModel: NotificationViewModel = hiltViewModel(),
 ) {
+    val uiState by notificationViewModel.uiState.collectAsStateWithLifecycle()
     NotificationScreen(
-        onBackClick = onBackClick
+        onBackClick = onBackClick,
+        uiState = uiState
     )
 }
 
@@ -40,7 +51,10 @@ fun NotificationScreenRoute(
 @Composable
 fun NotificationScreen(
     onBackClick: () -> Unit,
+    uiState: NotificationScreenUiState,
 ) {
+
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -62,24 +76,56 @@ fun NotificationScreen(
             )
         },
     ) { padding ->
-        LazyColumn(
-            modifier = Modifier.padding(padding),
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
 
-            items(10) {
-                NotificationCardItem()
+        when (uiState) {
+            NotificationScreenUiState.Loading -> {
+                ErrorAndLoadingScreen(isLoading = true)
             }
 
+            is NotificationScreenUiState.Error -> {
+                ErrorAndLoadingScreen(error = uiState.appError)
+            }
+
+            is NotificationScreenUiState.Success -> {
+
+                if (uiState.notifications.isEmpty()) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(20.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.no_item_found),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.padding(padding),
+                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        items(
+                            uiState.notifications,
+                            key = { it.id }
+                        ) { notification ->
+                            NotificationCardItem(notification)
+                        }
+
+                    }
+                }
+
+            }
         }
+
     }
 
 
 }
 
 @Composable
-fun NotificationCardItem() {
+fun NotificationCardItem(notification: NotificationDto) {
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
@@ -91,14 +137,14 @@ fun NotificationCardItem() {
 
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = "A sample video is given below to get an idea about what we are going to do in this article.",
-                style = MaterialTheme.typography.bodyMedium
+                text = notification.notificationMsg,
+                style = MaterialTheme.typography.bodyLarge
             )
 
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = "12 Jan 2023",
-                style = MaterialTheme.typography.labelSmall,
+                text = notification.createdAt,
+                style = MaterialTheme.typography.labelMedium,
                 textAlign = TextAlign.End
             )
         }
@@ -110,7 +156,8 @@ fun NotificationCardItem() {
 fun NoticeScreenPreview() {
     ECitizenTheme {
         NotificationScreen(
-            onBackClick = {}
+            onBackClick = {},
+            uiState = NotificationScreenUiState.Loading
         )
     }
 }

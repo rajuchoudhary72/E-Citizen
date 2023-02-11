@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.app.ecitizen.data.network.dto.AppFront
 import com.app.ecitizen.data.network.dto.UserDto
 import com.google.gson.Gson
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -39,7 +40,24 @@ class ECitizenPreferencesDataStoreImpl @Inject constructor(
         }
     }
 
+    override suspend fun saveAppFront(appFront: AppFront) {
+        context.dataStore.edit { userSession ->
+            userSession[APP_FRONT] = gson.toJson(appFront)
+        }
+    }
+
+    override fun getAppFrontFlow(): Flow<AppFront?> {
+        return context.dataStore.data.map { userSession ->
+            val appFront = userSession[APP_FRONT]
+            if (appFront.isNullOrBlank()) {
+                null
+            } else
+                gson.fromJson(appFront, AppFront::class.java)
+        }
+    }
+
     companion object {
         private val USER_DATA = stringPreferencesKey("user_data")
+        private val APP_FRONT = stringPreferencesKey("app_front")
     }
 }

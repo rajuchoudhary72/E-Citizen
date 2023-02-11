@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import com.app.ecitizen.BuildConfig
 import com.app.ecitizen.R
 import com.app.ecitizen.data.network.dto.AdvertisementDto
 import com.app.ecitizen.model.ScreenEvent
@@ -173,7 +174,7 @@ fun AdvertisementCardItem(
             ) {
 
                 AsyncImage(
-                    model = "https://aapnokhandela.com${advertisement.basePath}${advertisement.file}",
+                    model = "${BuildConfig.SERVER_URL}${advertisement.basePath}${advertisement.file}",
                     modifier = Modifier
                         .size(height = 100.dp, width = 80.dp)
                         .clip(RoundedCornerShape(10.dp)),

@@ -17,7 +17,9 @@ import retrofit2.HttpException
 import com.app.ecitizen.model.AppError
 import com.app.ecitizen.model.ErrorType
 import com.app.ecitizen.model.ScreenEvent
+import com.app.ecitizen.model.TextValue
 import com.google.gson.Gson
+import org.w3c.dom.Text
 
 /**
  * Convert Throwable to AppError
@@ -96,6 +98,13 @@ fun AppError.toScreenEvent(): ScreenEvent {
         ScreenEvent.ShowSnackbar.MessageString((this.cause as BadRequestException).apiError.message)
     } else {
         ScreenEvent.ShowSnackbar.MessageResId(this.stringRes())
+    }
+}
+fun AppError.toTextValue(): TextValue {
+  return  if (this is AppError.ApiException.BadRequestException) {
+      TextValue.Text((this.cause as BadRequestException).apiError.message)
+    } else {
+      TextValue.TextResId(this.stringRes())
     }
 }
 

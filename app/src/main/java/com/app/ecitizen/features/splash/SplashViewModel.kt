@@ -1,13 +1,12 @@
 package com.app.ecitizen.features.splash
 
+import androidx.annotation.Keep
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.ecitizen.data.datastore.ECitizenPreferencesDataStore
-import com.app.ecitizen.data.network.dto.UserDto
-import com.app.ecitizen.features.localization.AppLocaleUiState
+import com.app.ecitizen.data.network.dto.AppFront
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -16,14 +15,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
-    private val preferencesDataStore: ECitizenPreferencesDataStore
-) : ViewModel(){
+   preferencesDataStore: ECitizenPreferencesDataStore
+) : ViewModel() {
 
-    val uiState: Flow<SplashScreenUiState> =
+    val userDto = preferencesDataStore.getUserDtoFlow()
+
+
+    val uiState: StateFlow<SplashScreenUiState> =
         preferencesDataStore
-            .getUserDtoFlow()
+            .getAppFrontFlow()
             .map {
-                SplashScreenUiState.Success(userDto = it)
+                SplashScreenUiState.Success(appFront = it)
             }
             .stateIn(
                 scope = viewModelScope,
@@ -33,13 +35,13 @@ class SplashViewModel @Inject constructor(
 
 
 }
-
-sealed interface SplashScreenUiState{
-    object Loading:SplashScreenUiState
+@Keep
+sealed interface SplashScreenUiState {
+    object Loading : SplashScreenUiState
 
     data class Success(
-        val userDto: UserDto?
-    ):SplashScreenUiState
+        val appFront: AppFront?
+    ) : SplashScreenUiState
 }
 
 

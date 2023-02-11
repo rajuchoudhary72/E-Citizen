@@ -1,10 +1,10 @@
 package com.app.ecitizen.di
 
 
-import com.app.ecitizen.data.AuthRepositoryImpl
+import com.app.ecitizen.data.AppRepositoryImpl
 import com.app.ecitizen.data.datastore.ECitizenPreferencesDataStore
 import com.app.ecitizen.data.datastore.ECitizenPreferencesDataStoreImpl
-import com.app.ecitizen.model.repository.AuthRepository
+import com.app.ecitizen.model.repository.AppRepository
 import com.app.ecitizen.utils.ConnectivityManagerNetworkMonitor
 import com.app.ecitizen.utils.NetworkMonitor
 import dagger.Binds
@@ -23,7 +23,7 @@ interface DataModule {
 
     @Binds
     @Singleton
-    fun bindAuthRepository(dataStore: AuthRepositoryImpl): AuthRepository
+    fun bindAuthRepository(dataStore: AppRepositoryImpl): AppRepository
 
     @Binds
     fun bindsNetworkMonitor(

@@ -63,6 +63,13 @@
     <string name="enter_your_mobile_number">Enter your mobile number</string>
     <string name="we_will_send_you_a_conformation_code">We will send you a conformation code</string>
     <string name="otp_verification">OTP Verification</string>
+    <string name="no_item_found">No item found!</string>
+
+    <string name="general_notice">General Notice</string>
+    <string name="suggestion">Suggestion</string>
+    <string name="scheme">Scheme</string>
+    <string name="news">News</string>
+    <string name="mobile_validation_msg">Please enter a valid 10 digit mobile number.</string>
 
 
 </resources>

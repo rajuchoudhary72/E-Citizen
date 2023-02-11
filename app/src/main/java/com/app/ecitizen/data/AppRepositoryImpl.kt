@@ -4,17 +4,19 @@ import com.app.ecitizen.data.datastore.ECitizenPreferencesDataStore
 import com.app.ecitizen.data.network.RetrofitService
 import com.app.ecitizen.data.network.dto.AdvertisementDto
 import com.app.ecitizen.data.network.dto.AppFront
+import com.app.ecitizen.data.network.dto.NotificationDto
+import com.app.ecitizen.data.network.dto.SliderImage
 import com.app.ecitizen.data.network.dto.UserDto
-import com.app.ecitizen.model.repository.AuthRepository
+import com.app.ecitizen.model.repository.AppRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class AuthRepositoryImpl @Inject constructor(
+class AppRepositoryImpl @Inject constructor(
     private val retrofitService: RetrofitService,
     private val preferencesDataStore: ECitizenPreferencesDataStore
-) : AuthRepository {
-    override suspend fun getAppFronts(): Flow<List<AppFront>> {
+) : AppRepository {
+    override fun getAppFronts(): Flow<List<AppFront>> {
         return retrofitService.getAppFronts().map { it.data ?: emptyList() }
     }
 
@@ -32,5 +34,13 @@ class AuthRepositoryImpl @Inject constructor(
 
     override fun getAdvertisement(): Flow<List<AdvertisementDto>> {
         return retrofitService.getAdvertisements().map { it.data ?: emptyList() }
+    }
+
+    override fun getNotifications(): Flow<List<NotificationDto>> {
+        return retrofitService.getNotifications().map { it.data ?: emptyList() }
+    }
+
+    override fun getSliderImages(): Flow<List<SliderImage>> {
+        return retrofitService.getSliderImage().map { it.data?: emptyList() }
     }
 }

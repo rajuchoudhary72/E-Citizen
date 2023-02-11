@@ -16,7 +16,11 @@ class FlowCallAdapter<T>(
 
     @ExperimentalCoroutinesApi
     override fun adapt(call: Call<T>): Flow<T> = flow {
-        val response = call.awaitResponse()
+        val response = if (call.isExecuted) {
+            call.clone().awaitResponse()
+        } else {
+            call.awaitResponse()
+        }
         emit(response.bodyOrThrow())
     }
 }

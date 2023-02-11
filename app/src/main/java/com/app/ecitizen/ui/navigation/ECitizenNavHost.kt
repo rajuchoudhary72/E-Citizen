@@ -1,5 +1,7 @@
 package com.app.ecitizen.ui.navigation
 
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -44,16 +46,16 @@ import com.app.ecitizen.features.telephone.telephoneDirectoryScreen
  */
 @Composable
 fun ECitizenNavHost(
-    navController: NavHostController,
+    navController:() -> NavHostController,
     onBackClick: () -> Unit,
     openAppLocaleSettings: () -> Unit,
     closeSplashScreen: () -> Unit,
     modifier: Modifier = Modifier,
     startDestination: String = splashScreenNavigationRoute,
-    snackbarHostState: SnackbarHostState,
+    snackbarHostState:() -> SnackbarHostState,
 ) {
     NavHost(
-        navController = navController,
+        navController = navController(),
         startDestination = startDestination,
         modifier = modifier,
     ) {
@@ -74,7 +76,7 @@ fun ECitizenNavHost(
                     // Restore state when reselecting a previously selected item
                     restoreState = true
                 }
-                navController.navigateToHome(navOptions)
+                navController().navigateToHome(navOptions)
             },
             navigateToLogin ={
                 val navOptions = navOptions {
@@ -91,56 +93,56 @@ fun ECitizenNavHost(
                     // Restore state when reselecting a previously selected item
                     restoreState = true
                 }
-                navController.navigateToHome(navOptions)
-                navController.navigateToLoginScreen()
+                navController().navigateToHome(navOptions)
+                navController().navigateToLoginScreen()
             }
         )
 
         loginScreen(
             snackbarHostState = snackbarHostState,
-            navigateToVerifyOtp = { mobileNumber ->
-                navController.navigateToOtpVerification(mobileNumber)
-            }, openAppLocaleSettings = openAppLocaleSettings
+            navigateToVerifyOtp = navController()::navigateToOtpVerification,
+            openAppLocaleSettings = openAppLocaleSettings
         )
+        
         otpVerificationScreen(
-            snackbarHostState,
+            snackbarHostState(),
             navigateToHome = {
-                navController.navigateToHome()
+                navController().navigateToHome()
             },
             onBackClick = onBackClick
         )
 
         homeScreen(
             navigateToRegisterComplaint = {
-                navController.navigateToRegisterComplaint()
+                navController().navigateToRegisterComplaint()
             },
             navigateToViewComplaints = {
-                navController.navigateToViewComplaint()
+                navController().navigateToViewComplaint()
             },
             navigateToService = { service ->
                 when (service.name) {
                     R.string.notice_board -> {
-                        navController.navigateToNoticeBoard()
+                        navController().navigateToNoticeBoard()
                     }
 
                     R.string.services -> {
-                        navController.navigateToService()
+                        navController().navigateToService()
                     }
 
                     R.string.downloads -> {
-                        navController.navigateToDownload()
+                        navController().navigateToDownload()
                     }
 
                     R.string.important_places -> {
-                        navController.navigateToPlaces()
+                        navController().navigateToPlaces()
                     }
 
                     R.string.advertisements -> {
-                        navController.navigateToAdvertisement()
+                        navController().navigateToAdvertisement()
                     }
 
                     R.string.telephone_directory -> {
-                        navController.navigateToTelephoneDirectory()
+                        navController().navigateToTelephoneDirectory()
                     }
                 }
 
@@ -149,7 +151,7 @@ fun ECitizenNavHost(
         profileScreen(onBackClick)
 
         noticeBoardScreen(onBackClick = onBackClick, navigateToNotice = {
-            navController.navigateToNotice()
+            navController().navigateToNotice()
         })
 
         serviceScreen(
@@ -177,7 +179,7 @@ fun ECitizenNavHost(
 
         telephoneDirectoryScreen(
             onBackClick = onBackClick,
-            navigateToPhoneBook = { navController.navigateToPhoneBook() }
+            navigateToPhoneBook = { navController().navigateToPhoneBook() }
         )
     }
 }

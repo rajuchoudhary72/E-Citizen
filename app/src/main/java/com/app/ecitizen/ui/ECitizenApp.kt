@@ -1,7 +1,10 @@
 package com.app.ecitizen.ui
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumedWindowInsets
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -45,116 +48,113 @@ import com.app.ecitizen.ui.navigation.ECitizenNavHost
 import com.app.ecitizen.ui.navigation.TopLevelDestination
 import com.app.ecitizen.utils.NetworkMonitor
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun ECitizenApp(
     networkMonitor: NetworkMonitor,
     appState: ECitizenAppState = rememberECitizenAppState(networkMonitor = networkMonitor)
 ) {
-        val snackbarHostState = remember { SnackbarHostState() }
+    val snackbarHostState = remember { SnackbarHostState() }
 
-        val isOffline by appState.isOffline.collectAsStateWithLifecycle()
+    val isOffline by appState.isOffline.collectAsStateWithLifecycle()
 
-        var shouldShowBottomBar by rememberSaveable {
-            mutableStateOf(false)
-        }
-        var shouldShowAppBar by rememberSaveable {
-            mutableStateOf(false)
-        }
+    var shouldShowBottomBar by rememberSaveable {
+        mutableStateOf(false)
+    }
+    var shouldShowAppBar by rememberSaveable {
+        mutableStateOf(false)
+    }
 
-        // If user is not connected to the internet show a snack bar to inform them.
-        val notConnectedMessage = stringResource(R.string.not_connected)
-        LaunchedEffect(isOffline, appState.currentDestination) {
-            if (isOffline) {
-                snackbarHostState.showSnackbar(
-                    message = notConnectedMessage,
-                    duration = SnackbarDuration.Indefinite,
-                )
-            }
-
-            shouldShowAppBar =
-                appState.navController.currentDestination?.route?.contains(homeNavigationRoute) == true
-
-            shouldShowBottomBar = mutableListOf(
-                homeNavigationRoute,
-                profileScreenNavigationRoute
-            ).any { route -> route == appState.navController.currentDestination?.route }
-        }
-
-
-        if (appState.shouldShowAppLocaleDialog) {
-            AppLocaleDialog(
-                onDismiss = { appState.setShowAppLocaleDialog(false) },
+    // If user is not connected to the internet show a snack bar to inform them.
+    val notConnectedMessage = stringResource(R.string.not_connected)
+    LaunchedEffect(isOffline, appState.currentDestination) {
+        if (isOffline) {
+            snackbarHostState.showSnackbar(
+                message = notConnectedMessage,
+                duration = SnackbarDuration.Indefinite,
             )
         }
 
-        Scaffold(
-            modifier = Modifier,
-            snackbarHost = { SnackbarHost(snackbarHostState) },
-            contentWindowInsets = WindowInsets(0, 0, 0, 0),
-            containerColor = Color.Transparent,
-            contentColor = MaterialTheme.colorScheme.onBackground,
-            topBar = {
-                if (shouldShowAppBar)
-                    CenterAlignedTopAppBar(
-                        navigationIcon = {
-                            Image(
-                                modifier = Modifier.size(60.dp).padding(start = 16.dp),
-                                painter = painterResource(id = R.drawable.ic_splash_logo),
+        shouldShowAppBar =
+            appState.navController.currentDestination?.route?.contains(homeNavigationRoute) == true
+
+        shouldShowBottomBar = mutableListOf(
+            homeNavigationRoute,
+            profileScreenNavigationRoute
+        ).any { route -> route == appState.navController.currentDestination?.route }
+    }
+
+
+    if (appState.shouldShowAppLocaleDialog) {
+        AppLocaleDialog(
+            onDismiss = appState::hideAppLocaleDialog,
+        )
+    }
+
+    Scaffold(
+        modifier = Modifier.navigationBarsPadding(),
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        containerColor = Color.Transparent,
+        contentColor = MaterialTheme.colorScheme.onBackground,
+        topBar = {
+            if (shouldShowAppBar)
+                CenterAlignedTopAppBar(
+                    navigationIcon = {
+                        Image(
+                            modifier = Modifier
+                                .size(60.dp)
+                                .padding(start = 16.dp),
+                            painter = painterResource(id = R.drawable.ic_splash_logo),
+                            contentDescription = null
+                        )
+                    },
+                    title = {
+                        Text(
+                            text = stringResource(R.string.khandela_nagar_palika),
+                            style = MaterialTheme.typography.titleMedium.copy(fontFamily = FontFamily.Serif),
+                            textAlign = TextAlign.Center
+                        )
+                    },
+                    actions = {
+
+                        IconButton(onClick = appState::showAppLocaleDialog) {
+                            Icon(
+                                imageVector = Icons.Outlined.GTranslate,
                                 contentDescription = null
                             )
-                        },
-                        title = {
-                            Text(
-                                text = stringResource(R.string.khandela_nagar_palika),
-                                style = MaterialTheme.typography.titleMedium.copy(fontFamily = FontFamily.Serif),
-                                textAlign = TextAlign.Center
-                            )
-                        },
-                        actions = {
-
-                            IconButton(onClick = {
-                                appState.setShowAppLocaleDialog(
-                                    true
-                                )
-                            }) {
-                                Icon(
-                                    imageVector = Icons.Outlined.GTranslate,
-                                    contentDescription = null
-                                )
-                            }
-
-                            IconButton(onClick = {
-                                appState.navController.navigateToNotification()
-                            }) {
-
-                                Icon(
-                                    imageVector = Icons.Outlined.Notifications,
-                                    contentDescription = null
-                                )
-                            }
                         }
-                    )
-            },
-            bottomBar = {
-                if (shouldShowBottomBar)
-                    ECitizenBottomBar(
-                        destinations = appState.topLevelDestinations,
-                        onNavigateToDestination = appState::navigateToTopLevelDestination,
-                        currentDestination = appState.currentDestination
-                    )
-            }
-        ) { padding ->
-            ECitizenNavHost(
-                modifier = Modifier.padding(padding),
-                navController = appState.navController,
-                onBackClick = appState::onBackClick,
-                openAppLocaleSettings = { appState.setShowAppLocaleDialog(true) },
-                closeSplashScreen = { appState.closeSplashScreen() },
-                snackbarHostState =snackbarHostState
-            )
-        }
 
+                        IconButton(onClick = {
+                            appState.navController.navigateToNotification()
+                        }) {
+
+                            Icon(
+                                imageVector = Icons.Outlined.Notifications,
+                                contentDescription = null
+                            )
+                        }
+                    }
+                )
+        },
+        bottomBar = {
+            if (shouldShowBottomBar)
+                ECitizenBottomBar(
+                    destinations = appState.topLevelDestinations,
+                    onNavigateToDestination = appState::navigateToTopLevelDestination,
+                    currentDestination = appState.currentDestination
+                )
+        }
+    ) { padding ->
+        ECitizenNavHost(
+            modifier = Modifier.padding(padding).consumedWindowInsets(padding),
+            navController = { appState.navController },
+            onBackClick = appState::onBackClick,
+            openAppLocaleSettings = appState::showAppLocaleDialog,
+            closeSplashScreen = appState::closeSplashScreen,
+            snackbarHostState = { snackbarHostState }
+        )
+    }
 
 
 }

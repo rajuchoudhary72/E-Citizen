@@ -1,6 +1,5 @@
 package com.app.ecitizen.features.home
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -31,9 +30,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
+import com.app.ecitizen.BuildConfig
 import com.app.ecitizen.R
+import com.app.ecitizen.data.network.dto.SliderImage
 import com.app.ecitizen.features.complaint.ComplaintsDialog
+import com.app.ecitizen.ui.components.ErrorAndLoadingScreen
 import com.app.ecitizen.ui.theme.ECitizenTheme
+import com.app.ecitizen.utils.toAppError
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.HorizontalPagerIndicator
@@ -78,12 +82,12 @@ fun HomeScreen(
 ) {
     when (homeUiState) {
         HomeUiState.Loading -> {
-
+            ErrorAndLoadingScreen(true)
 
         }
 
         is HomeUiState.Error -> {
-
+            ErrorAndLoadingScreen(error = homeUiState.error.toAppError())
         }
 
         is HomeUiState.Success -> {
@@ -95,16 +99,20 @@ fun HomeScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 contentPadding = PaddingValues(16.dp)
             ) {
-                item(
-                    span = {
-                        GridItemSpan(MAX_SPAN)
+
+                if (homeUiState.sliderImages.isNotEmpty()) {
+                    item(
+                        span = {
+                            GridItemSpan(MAX_SPAN)
+                        }
+                    ) {
+                        HomeScreenCarousel(homeUiState.sliderImages)
                     }
-                ) {
-                    HomeScreenCarousel(homeUiState.bannerImages)
                 }
 
                 items(
-                    homeUiState.services
+                    homeUiState.services,
+                    key = { it.name }
                 ) { service ->
                     ServicesCard(
                         service,
@@ -126,7 +134,7 @@ fun HomeScreen(
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun HomeScreenCarousel(images: List<String>) {
+fun HomeScreenCarousel(images: List<SliderImage>) {
 
     val pagerState = rememberPagerState()
 
@@ -145,7 +153,8 @@ fun HomeScreenCarousel(images: List<String>) {
                 .fillMaxWidth()
                 .height(200.dp),
             count = images.size,
-            state = pagerState
+            state = pagerState,
+            key = { images[it].id }
         ) { page: Int ->
             CarouselItem(images[page])
         }
@@ -156,8 +165,7 @@ fun HomeScreenCarousel(images: List<String>) {
 }
 
 @Composable
-fun CarouselItem(image: String) {
-
+fun CarouselItem(image: SliderImage) {
     Card(
         modifier = Modifier
             .fillMaxSize()
@@ -165,9 +173,11 @@ fun CarouselItem(image: String) {
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
-        Image(
+        AsyncImage(
             modifier = Modifier.fillMaxSize(),
-            painter = painterResource(id = R.drawable.demo_img),
+            model = BuildConfig.SERVER_URL + image.image,
+            placeholder = painterResource(id = R.drawable.ic_splash_logo),
+            error = painterResource(id = R.drawable.ic_splash_logo),
             contentDescription = null,
             contentScale = ContentScale.Crop,
         )
@@ -226,7 +236,7 @@ fun HomeScreenPreview() {
     ECitizenTheme() {
         HomeScreen(
             homeUiState = HomeUiState.Success(
-                bannerImages = mutableListOf("", "", "", "", ""),
+                sliderImages = emptyList(),
                 services = Service.SERVICES,
             ),
             navigateToService = {},

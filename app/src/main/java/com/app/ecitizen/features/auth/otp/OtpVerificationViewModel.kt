@@ -7,11 +7,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.ecitizen.features.auth.OtpVerificationArgs
-import com.app.ecitizen.features.auth.loginNavigationRoute
 import com.app.ecitizen.features.home.homeNavigationRoute
 import com.app.ecitizen.model.ScreenEvent
-import com.app.ecitizen.model.repository.AuthRepository
-import com.app.ecitizen.utils.stringRes
+import com.app.ecitizen.model.repository.AppRepository
 import com.app.ecitizen.utils.toLoadingState
 import com.app.ecitizen.utils.toScreenEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,7 +24,7 @@ import javax.inject.Inject
 @HiltViewModel
 class OtpVerificationViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val authRepository: AuthRepository
+    private val authRepository: AppRepository
 ) : ViewModel() {
 
     private val otpVerificationArgs: OtpVerificationArgs = OtpVerificationArgs(savedStateHandle)

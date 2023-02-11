@@ -1,5 +1,8 @@
 package com.app.ecitizen.model
 
+import androidx.annotation.Keep
+
+@Keep
 sealed interface ScreenEvent {
     sealed interface ShowSnackbar : ScreenEvent{
         data class MessageResId(val resId: Int) : ShowSnackbar
@@ -7,5 +10,12 @@ sealed interface ScreenEvent {
     }
 
     data class Navigate(val route: String) : ScreenEvent
+}
+
+@Keep
+sealed interface TextValue {
+    data class TextResId(val resId: Int) : TextValue
+    data class Text(val value: String) : TextValue
+
 }
 

@@ -40,7 +40,7 @@ fun rememberECitizenAppState(
 @Stable
 class ECitizenAppState(
     val navController: NavHostController,
-    val coroutineScope: CoroutineScope,
+    coroutineScope: CoroutineScope,
     networkMonitor: NetworkMonitor,
 ) {
 
@@ -58,16 +58,15 @@ class ECitizenAppState(
 
     val shouldShowBottomBar: Boolean
         @Composable get() = mutableListOf(
-           homeNavigationRoute,
-           profileScreenNavigationRoute
+            homeNavigationRoute,
+            profileScreenNavigationRoute
         ).any { route -> route == navController.currentDestination?.route }
 
 
     val shouldShowAppBar: Boolean
         @Composable get() = mutableListOf(
-           homeNavigationRoute
+            homeNavigationRoute
         ).any { route -> route == navController.currentDestination?.route }
-
 
 
     /**
@@ -118,8 +117,12 @@ class ECitizenAppState(
         navController.popBackStack()
     }
 
-    fun setShowAppLocaleDialog(shouldShow: Boolean) {
-        shouldShowAppLocaleDialog = shouldShow
+    fun showAppLocaleDialog() {
+        shouldShowAppLocaleDialog = true
+    }
+
+    fun hideAppLocaleDialog() {
+        shouldShowAppLocaleDialog = false
     }
 
     fun closeSplashScreen() {
@@ -137,7 +140,7 @@ class ECitizenAppState(
             // Restore state when reselecting a previously selected item
             restoreState = true
         }
-       // navController.navigateToHome(navOptions)
+        // navController.navigateToHome(navOptions)
         navController.navigateToLoginScreen(navOptions)
     }
 }
