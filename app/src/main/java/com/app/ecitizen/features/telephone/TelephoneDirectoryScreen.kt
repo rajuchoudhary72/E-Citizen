@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material3.Card
@@ -20,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -28,18 +30,24 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.app.ecitizen.R
+import com.app.ecitizen.features.place.ImportantPlace
+import com.app.ecitizen.ui.components.ErrorAndLoadingScreen
 import com.app.ecitizen.ui.theme.ECitizenTheme
 
 @Composable
 fun TelephoneDirectoryScreenRoute(
     onBackClick: () -> Unit,
-    navigateToPhoneBook: () -> Unit,
+    navigateToPhoneBook: (String) -> Unit,
     telephoneDirectoryViewModel: TelephoneDirectoryViewModel = hiltViewModel(),
 ) {
+    val uiState by telephoneDirectoryViewModel.uiState.collectAsStateWithLifecycle()
+
     TelephoneDirectoryScreen(
         onBackClick = onBackClick,
-        navigateToPhoneBook = navigateToPhoneBook
+        navigateToPhoneBook = navigateToPhoneBook,
+        uiState = uiState
     )
 }
 
@@ -47,7 +55,8 @@ fun TelephoneDirectoryScreenRoute(
 @Composable
 fun TelephoneDirectoryScreen(
     onBackClick: () -> Unit,
-    navigateToPhoneBook: () -> Unit,
+    navigateToPhoneBook: (String) -> Unit,
+    uiState: TelephoneDirectoryUiState,
 ) {
 
     Scaffold(
@@ -70,21 +79,35 @@ fun TelephoneDirectoryScreen(
             )
         },
     ) { padding ->
-        LazyVerticalGrid(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding),
-            columns = GridCells.Fixed(2),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            contentPadding = PaddingValues(16.dp)
-        ) {
-            items(4) {
-                NoticeBoardCardItem(
-                    onClick = navigateToPhoneBook
-                )
+
+        when(uiState){
+            is TelephoneDirectoryUiState.Error -> {
+
+            }
+            TelephoneDirectoryUiState.Loading -> {
+                ErrorAndLoadingScreen(true)
+            }
+            is TelephoneDirectoryUiState.Success -> {
+                LazyVerticalGrid(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding),
+                    columns = GridCells.Fixed(2),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    contentPadding = PaddingValues(16.dp)
+                ) {
+                    items(uiState.telephoneDirectory){telephoneDirectory ->
+                        NoticeBoardCardItem(
+                            onClick = {navigateToPhoneBook(telephoneDirectory.searchKey)},
+                            telephoneDirectory = telephoneDirectory
+                        )
+                    }
+
+                }
             }
         }
+
     }
 
 }
@@ -92,7 +115,8 @@ fun TelephoneDirectoryScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoticeBoardCardItem(
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    telephoneDirectory: TelephoneDirectory
 ) {
     Card(
         onClick = onClick,
@@ -108,13 +132,13 @@ fun NoticeBoardCardItem(
         ) {
             Image(
                 modifier = Modifier.size(60.dp),
-                painter = painterResource(id = R.drawable.india_ashoka),
+                painter = painterResource(id = telephoneDirectory.icon),
                 contentDescription = null
             )
             Text(
                 modifier = Modifier.padding(top = 10.dp),
-                text = "General Notice",
-                style = MaterialTheme.typography.labelLarge,
+                text = stringResource(id = telephoneDirectory.name),
+                style = MaterialTheme.typography.titleSmall,
                 textAlign = TextAlign.Center,
                 maxLines = 2
             )
@@ -128,7 +152,8 @@ fun SplashScreenPreview() {
     ECitizenTheme {
         TelephoneDirectoryScreen(
             onBackClick = {},
-            navigateToPhoneBook = {}
+            navigateToPhoneBook = {},
+            uiState = TelephoneDirectoryUiState.Success(TelephoneDirectory.TELEPHONE_DIRECTORY)
         )
     }
 }

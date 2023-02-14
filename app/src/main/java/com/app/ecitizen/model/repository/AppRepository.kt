@@ -5,6 +5,7 @@ import com.app.ecitizen.data.network.dto.AppFront
 import com.app.ecitizen.data.network.dto.DownloadDto
 import com.app.ecitizen.data.network.dto.NoticeDto
 import com.app.ecitizen.data.network.dto.NotificationDto
+import com.app.ecitizen.data.network.dto.PhoneBookDto
 import com.app.ecitizen.data.network.dto.PlaceDto
 import com.app.ecitizen.data.network.dto.ServiceDto
 import com.app.ecitizen.data.network.dto.SliderImage
@@ -42,6 +43,8 @@ interface AppRepository {
      fun getDownloads(): Flow<List<DownloadDto>>
 
      fun getImportantPlaces(search:String): Flow<List<PlaceDto>>
+
+     fun getPhoneBook(search:String): Flow<List<PhoneBookDto>>
 
      fun getServicesData(): Flow<ServiceDto>
 }

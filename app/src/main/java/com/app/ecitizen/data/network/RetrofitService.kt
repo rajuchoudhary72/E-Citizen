@@ -7,6 +7,7 @@ import com.app.ecitizen.data.network.dto.NetworkResponse
 import com.app.ecitizen.data.network.dto.NoticeDto
 import com.app.ecitizen.data.network.dto.NotificationDto
 import com.app.ecitizen.data.network.dto.OtpResponseDto
+import com.app.ecitizen.data.network.dto.PhoneBookDto
 import com.app.ecitizen.data.network.dto.PlaceDto
 import com.app.ecitizen.data.network.dto.ServiceDto
 import com.app.ecitizen.data.network.dto.SliderImage
@@ -77,6 +78,9 @@ interface RetrofitService {
 
     @GET("api/get_importantplace_list")
     fun getImportantPlaces(@Query("search") search:String): Flow<NetworkResponse<List<PlaceDto>>>
+
+    @GET("api/get_telephone_directory")
+    fun getPhoneBook(@Query("search") search:String): Flow<NetworkResponse<List<PhoneBookDto>>>
 
     @GET("api/e-services")
     fun getServicesData(): Flow<NetworkResponse<List<ServiceDto>>>

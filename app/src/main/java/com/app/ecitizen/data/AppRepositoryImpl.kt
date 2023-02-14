@@ -7,6 +7,7 @@ import com.app.ecitizen.data.network.dto.AppFront
 import com.app.ecitizen.data.network.dto.DownloadDto
 import com.app.ecitizen.data.network.dto.NoticeDto
 import com.app.ecitizen.data.network.dto.NotificationDto
+import com.app.ecitizen.data.network.dto.PhoneBookDto
 import com.app.ecitizen.data.network.dto.PlaceDto
 import com.app.ecitizen.data.network.dto.ServiceDto
 import com.app.ecitizen.data.network.dto.SliderImage
@@ -111,6 +112,10 @@ class AppRepositoryImpl @Inject constructor(
 
     override fun getImportantPlaces(search: String): Flow<List<PlaceDto>> {
         return retrofitService.getImportantPlaces(search).map { it.data ?: emptyList() }
+    }
+
+    override fun getPhoneBook(search: String): Flow<List<PhoneBookDto>> {
+        return retrofitService.getPhoneBook(search).map { it.data ?: emptyList() }
     }
 
     override fun getServicesData(): Flow<ServiceDto> {

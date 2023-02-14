@@ -226,7 +226,7 @@ fun ECitizenNavHost(
 
         telephoneDirectoryScreen(
             onBackClick = onBackClick,
-            navigateToPhoneBook = { navController().navigateToPhoneBook() }
+            navigateToPhoneBook = { navController().navigateToPhoneBook(it) }
         )
     }
 }

@@ -94,5 +94,19 @@
     <string name="service16">Marriage Registration</string>
     <string name="view">View</string>
 
+    <string name="indra_rasoi">Indra Rasoi Meals @8 Rs</string>
+    <string name="public_parks">Public Parks</string>
+    <string name="parking">Parking</string>
+    <string name="public_toilets">Public Toilets</string>
+    <string name="community_halls">Community Halls</string>
+    <string name="aashray_sthal">Aashray Sthal</string>
+    <string name="tourism_places">Tourism Places</string>
+
+    <string name="chairman">Chairman</string>
+    <string name="commissioner">Commissioner</string>
+    <string name="office_employees">Office employees</string>
+    <string name="office_a_glance">Office a Glance</string>
+    <string name="ward_members">Ward members</string>
+
 
 </resources>
