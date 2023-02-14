@@ -3,11 +3,12 @@ package com.app.ecitizen.features.profile
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.app.ecitizen.R
 import com.app.ecitizen.data.datastore.ECitizenPreferencesDataStore
 import com.app.ecitizen.features.home.homeNavigationRoute
-import com.app.ecitizen.features.splash.splashScreenNavigationRoute
 import com.app.ecitizen.model.ScreenEvent
 import com.app.ecitizen.model.repository.AppRepository
 import com.app.ecitizen.utils.toLoadingState
@@ -25,7 +26,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ProfileScreenViewModel @Inject constructor(
+class UpdateProfileViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     val preferencesDataStore: ECitizenPreferencesDataStore,
     private val appRepository: AppRepository
 ) : ViewModel() {
@@ -33,7 +35,11 @@ class ProfileScreenViewModel @Inject constructor(
     val user =
         _user.stateIn(scope = viewModelScope, started = SharingStarted.Lazily, initialValue = null)
 
+    private var isUserRegistered = false
 
+
+    private val updateProfileArgs: UpdateProfileArgs = UpdateProfileArgs(savedStateHandle)
+    val mobileNumber = updateProfileArgs.mobileNumber
 
 
     private val _screenEvent = MutableSharedFlow<ScreenEvent>()
@@ -41,8 +47,6 @@ class ProfileScreenViewModel @Inject constructor(
 
     var isLoading by mutableStateOf(false)
 
-    var mobileNumber by mutableStateOf("")
-        private set
     var name by mutableStateOf("")
         private set
 
@@ -68,8 +72,10 @@ class ProfileScreenViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            _user.first()?.let { user ->
-                mobileNumber = user.mobile
+            val user = _user.first()
+            isUserRegistered = user != null
+
+            user?.let { user ->
                 updateName(user.name)
                 updateWard(user.ward)
                 updateColony(user.colony)
@@ -80,13 +86,51 @@ class ProfileScreenViewModel @Inject constructor(
 
     fun updateProfile() {
         viewModelScope.launch {
-            appRepository
-                .crateUserProfile(
-                    mobileNumber = mobileNumber,
-                    ward = ward,
-                    name = name,
-                    colony = colony
+            if(mobileNumber.length!=10){
+                _screenEvent.emit(
+                    ScreenEvent.ShowSnackbar.MessageResId(
+                        R.string.mobile_validation_msg
+                    )
                 )
+                return@launch
+            }
+
+            if(ward.isEmpty()){
+                _screenEvent.emit(
+                    ScreenEvent.ShowSnackbar.MessageResId(
+                        R.string.ward_validation_msg
+                    )
+                )
+                return@launch
+            }
+
+            if(colony.isEmpty()){
+                _screenEvent.emit(
+                    ScreenEvent.ShowSnackbar.MessageResId(
+                        R.string.colony_validation_msg
+                    )
+                )
+                return@launch
+            }
+
+
+            if(isUserRegistered){
+                appRepository
+                    .updateUserProfile(
+                        ward = ward,
+                        name = name,
+                        colony = colony
+                    )
+
+            }else{
+                appRepository
+                    .crateUserProfile(
+                        mobileNumber = mobileNumber,
+                        ward = ward,
+                        name = name,
+                        colony = colony
+                    )
+            }
                 .toLoadingState()
                 .flowOn(Dispatchers.IO)
                 .collectLatest { state ->
@@ -96,26 +140,21 @@ class ProfileScreenViewModel @Inject constructor(
                             appError
                         )
                     }
-
                     state.getValueOrNull()?.let { message ->
-
                         _screenEvent.emit(
                             ScreenEvent.ShowSnackbar.MessageString(
-                                "Otp match successfully !"
+                                message
                             )
                         )
 
-                        _screenEvent.emit(ScreenEvent.Navigate(homeNavigationRoute))
+                        if(isUserRegistered){
+                            _screenEvent.emit(ScreenEvent.Navigate(profileScreenNavigationRoute))
+                        }else{
+                            _screenEvent.emit(ScreenEvent.Navigate(homeNavigationRoute))
+                        }
 
                     }
                 }
-        }
-    }
-
-    fun logout(){
-        viewModelScope.launch {
-            preferencesDataStore.clearPreferences()
-            _screenEvent.emit(ScreenEvent.Navigate(splashScreenNavigationRoute))
         }
     }
 

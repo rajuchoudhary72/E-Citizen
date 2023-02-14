@@ -45,12 +45,14 @@ import com.app.ecitizen.utils.toScreenEvent
 @Composable
 fun AdvertisementScreenRoute(
     onBackClick: () -> Unit,
+    navigateToImagePreview: (String) -> Unit,
     advertisementViewModel: AdvertisementViewModel = hiltViewModel(),
 ) {
     val uiState by advertisementViewModel.uiState.collectAsStateWithLifecycle()
     AdvertisementScreen(
         onBackClick = onBackClick,
-        uiState = uiState
+        uiState = uiState,
+        viewAdvertisement = navigateToImagePreview
     )
 }
 
@@ -58,6 +60,7 @@ fun AdvertisementScreenRoute(
 @Composable
 fun AdvertisementScreen(
     onBackClick: () -> Unit,
+    viewAdvertisement: (String) -> Unit,
     uiState: AdvertisementScreenUiState,
 ) {
 
@@ -139,7 +142,7 @@ fun AdvertisementScreen(
                         verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         items(uiState.advertisements) { advertisement ->
-                            AdvertisementCardItem(advertisement)
+                            AdvertisementCardItem(advertisement,viewAdvertisement)
                         }
                     }
                 }
@@ -152,12 +155,15 @@ fun AdvertisementScreen(
 
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AdvertisementCardItem(
-    advertisement: AdvertisementDto
+    advertisement: AdvertisementDto,
+    viewAdvertisement: (String) -> Unit
 ) {
     Card(
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        onClick = {viewAdvertisement(advertisement.fileUrl())}
     ) {
         Column(
             modifier = Modifier
@@ -220,7 +226,8 @@ fun NoticeScreenPreview() {
     ECitizenTheme {
         AdvertisementScreen(
             onBackClick = {},
-            uiState = AdvertisementScreenUiState.Loading
+            uiState = AdvertisementScreenUiState.Loading,
+            viewAdvertisement = {}
         )
     }
 }

@@ -31,6 +31,7 @@
     <string name="commissioner_office">Commi Office</string>
     <string name="contact_us">Contact Us</string>
     <string name="profile">Profile</string>
+    <string name="update_profile">Update Profile</string>
 
 
     <string name="notice_board">Notice Board</string>
@@ -70,6 +71,8 @@
     <string name="scheme">Scheme</string>
     <string name="news">News</string>
     <string name="mobile_validation_msg">Please enter a valid 10 digit mobile number.</string>
+    <string name="ward_validation_msg">Please enter your ward number.</string>
+    <string name="colony_validation_msg">Please enter your colony address.</string>
     <string name="download">Download</string>
 
 
@@ -89,6 +92,7 @@
     <string name="service14">Building Plan approval (LSG)</string>
     <string name="service15">Birth -death Registration</string>
     <string name="service16">Marriage Registration</string>
+    <string name="view">View</string>
 
 
 </resources>

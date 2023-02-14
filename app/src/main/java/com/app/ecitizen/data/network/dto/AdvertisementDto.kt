@@ -1,4 +1,5 @@
 package com.app.ecitizen.data.network.dto
+import com.app.ecitizen.BuildConfig
 import com.google.gson.annotations.SerializedName
 
 
@@ -21,4 +22,6 @@ data class AdvertisementDto(
     val subject: String?,
     @SerializedName("updated_at")
     val updatedAt: String?
-)
+){
+    fun fileUrl() = "${BuildConfig.SERVER_URL}${basePath}${file}"
+}

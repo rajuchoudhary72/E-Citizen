@@ -13,10 +13,14 @@ fun NavController.navigateToAdvertisement() {
 
 fun NavGraphBuilder.advertisementScreen(
     onBackClick: () -> Unit,
+    navigateToImagePreview: (String) -> Unit,
 ) {
 
     composable(route = advertisementScreenNavigationRoute) {
-        AdvertisementScreenRoute(onBackClick = onBackClick)
+        AdvertisementScreenRoute(
+            onBackClick = onBackClick,
+            navigateToImagePreview = navigateToImagePreview
+        )
     }
 
 }

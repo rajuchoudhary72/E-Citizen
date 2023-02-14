@@ -100,6 +100,8 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
 
 
+    implementation (libs.zoomage)
+    implementation(libs.coil)
 
     // custom declaration for latest versions of material 3 and adaptive accompanist
     implementation("androidx.compose.material3:material3:1.0.0-rc01")

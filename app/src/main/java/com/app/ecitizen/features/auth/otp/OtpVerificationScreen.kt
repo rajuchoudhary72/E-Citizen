@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.app.ecitizen.R
+import com.app.ecitizen.features.profile.updateProfileScreenNavigationRoute
 import com.app.ecitizen.model.ScreenEvent
 import com.app.ecitizen.ui.components.PinView
 import com.app.ecitizen.ui.theme.ECitizenTheme
@@ -51,7 +52,8 @@ fun OtpVerificationRoute(
     navigateToHome: () -> Unit,
     onBackClick: () -> Unit,
     otpViewModel: OtpVerificationViewModel = hiltViewModel(),
-    snackbarHostState: SnackbarHostState
+    snackbarHostState: SnackbarHostState,
+    navigateToUpdateProfile: (String) -> Unit,
 ) {
     val context = LocalContext.current
 
@@ -69,7 +71,11 @@ fun OtpVerificationRoute(
             .collectLatest { event ->
                 when(event) {
                     is ScreenEvent.Navigate -> {
-                        navigateToHome()
+                        if (event.route== updateProfileScreenNavigationRoute) {
+                            navigateToUpdateProfile(otpViewModel.mobileNumber)
+                        }else{
+                            navigateToHome()
+                        }
                     }
                     is ScreenEvent.ShowSnackbar.MessageResId -> {
                         snackbarHostState.showSnackbar(context.getString(event.resId))

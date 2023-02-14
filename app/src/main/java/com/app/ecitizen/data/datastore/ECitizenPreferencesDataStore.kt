@@ -14,5 +14,6 @@ interface ECitizenPreferencesDataStore {
     suspend fun saveAppFront(appFront: AppFront)
 
     fun getAppFrontFlow(): Flow<AppFront?>
+   suspend fun clearPreferences()
 
 }

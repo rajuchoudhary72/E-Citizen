@@ -21,6 +21,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,6 +32,7 @@ import com.app.ecitizen.R
 import com.app.ecitizen.data.network.dto.DownloadDto
 import com.app.ecitizen.ui.components.ErrorAndLoadingScreen
 import com.app.ecitizen.ui.theme.ECitizenTheme
+import com.app.ecitizen.utils.downloadFile
 
 @Composable
 fun DownloadScreenRoute(
@@ -81,6 +83,8 @@ fun DownloadScreen(
             }
 
             is DownloadUiState.Success -> {
+
+                val context = LocalContext.current
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
@@ -89,11 +93,15 @@ fun DownloadScreen(
                     contentPadding = PaddingValues(16.dp)
                 ) {
 
-                    items(uiState.downloads,key = {it.id}){ download ->
+                    items(uiState.downloads, key = { it.id }) { download ->
                         DownloadCardItem(
                             download = download,
                             onClickDownload = {
-
+                                context.downloadFile(
+                                    url = download.fileUrl(),
+                                    fileName = download.subject ?: "File Download",
+                                    desc = ""
+                                )
                             }
                         )
                     }
@@ -121,7 +129,7 @@ fun DownloadCardItem(
                 .padding(10.dp),
         ) {
             Text(
-                text = download.subject?:"",
+                text = download.subject ?: "",
                 style = MaterialTheme.typography.titleMedium,
             )
 
@@ -141,9 +149,9 @@ fun DownloadCardItem(
 @Composable
 fun SplashScreenPreview() {
     ECitizenTheme {
-       /* DownloadScreen(
-            onBackClick = {},
-            uiState = uiState,
-        )*/
+        /* DownloadScreen(
+             onBackClick = {},
+             uiState = uiState,
+         )*/
     }
 }

@@ -48,6 +48,7 @@ fun NavGraphBuilder.otpVerificationScreen(
     snackbarHostState: SnackbarHostState,
     navigateToHome: () -> Unit,
     onBackClick: () -> Unit,
+    navigateToUpdateProfile: (String) -> Unit,
 ) {
     composable(
         route = "$otpVerificationNavigationRoute/{$mobileNumberArg}"
@@ -55,7 +56,8 @@ fun NavGraphBuilder.otpVerificationScreen(
         OtpVerificationRoute(
             snackbarHostState=snackbarHostState,
             navigateToHome = navigateToHome,
-            onBackClick = onBackClick
+            onBackClick = onBackClick,
+            navigateToUpdateProfile = navigateToUpdateProfile
         )
     }
 }

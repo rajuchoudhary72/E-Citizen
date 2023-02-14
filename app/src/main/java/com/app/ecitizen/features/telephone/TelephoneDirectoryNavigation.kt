@@ -3,8 +3,6 @@ package com.app.ecitizen.features.telephone
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.app.ecitizen.features.advertisement.AdvertisementScreenRoute
-import com.app.ecitizen.features.noticeBoard.notice.NoticeScreenRoute
 import com.app.ecitizen.features.telephone.phoneBook.PhoneBookScreenRoute
 
 

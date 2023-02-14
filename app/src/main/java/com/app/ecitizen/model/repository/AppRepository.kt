@@ -16,6 +16,19 @@ interface AppRepository {
 
     suspend fun sendOtp(mobileNumber:String): Flow<String>
 
+    suspend fun crateUserProfile(
+        mobileNumber:String,
+        name:String,
+        ward:String,
+        colony:String,
+    ): Flow<String>
+
+    suspend fun updateUserProfile(
+        name:String,
+        ward:String,
+        colony:String,
+    ): Flow<String>
+
     suspend fun verifyOtp(mobileNumber:String, otp:String): Flow<UserDto?>
 
      fun getAdvertisement(): Flow<List<AdvertisementDto>>

@@ -56,6 +56,12 @@ class ECitizenPreferencesDataStoreImpl @Inject constructor(
         }
     }
 
+    override suspend fun clearPreferences() {
+        context.dataStore.edit {
+            it.clear()
+        }
+    }
+
     companion object {
         private val USER_DATA = stringPreferencesKey("user_data")
         private val APP_FRONT = stringPreferencesKey("app_front")

@@ -32,6 +32,7 @@ fun NavController.navigateToNotice(noticeType:String) {
 fun NavGraphBuilder.noticeBoardScreen(
     onBackClick: () -> Unit,
     navigateToNotice: (String) -> Unit,
+    navigateToImagePreview: (String) -> Unit,
 ) {
     composable(route = noticeBoardScreenNavigationRoute) {
         NoticeBoardScreenRoute(
@@ -41,7 +42,10 @@ fun NavGraphBuilder.noticeBoardScreen(
     }
 
     composable( route = "$noticeScreenNavigationRoute/{$noticeTypeArg}") {
-        NoticeScreenRoute(onBackClick = onBackClick)
+        NoticeScreenRoute(
+            onBackClick = onBackClick,
+            previewImage = navigateToImagePreview
+        )
     }
 
 }

@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.ecitizen.features.auth.OtpVerificationArgs
 import com.app.ecitizen.features.home.homeNavigationRoute
+import com.app.ecitizen.features.profile.updateProfileScreenNavigationRoute
+import com.app.ecitizen.model.LoadState
 import com.app.ecitizen.model.ScreenEvent
 import com.app.ecitizen.model.repository.AppRepository
 import com.app.ecitizen.utils.toLoadingState
@@ -48,7 +50,7 @@ class OtpVerificationViewModel @Inject constructor(
     fun verifyOtp() {
         viewModelScope.launch {
             authRepository
-                .verifyOtp(mobileNumber, otp )
+                .verifyOtp(mobileNumber, otp)
                 .toLoadingState()
                 .flowOn(Dispatchers.IO)
                 .collectLatest { state ->
@@ -59,7 +61,8 @@ class OtpVerificationViewModel @Inject constructor(
                         )
                     }
 
-                    state.getValueOrNull()?.let { message ->
+                    if (state is LoadState.Loaded) {
+                        val user = state.getValueOrNull()
 
                         _screenEvent.emit(
                             ScreenEvent.ShowSnackbar.MessageString(
@@ -67,9 +70,20 @@ class OtpVerificationViewModel @Inject constructor(
                             )
                         )
 
-                        _screenEvent.emit(ScreenEvent.Navigate(homeNavigationRoute))
+                        if (user == null) {
+                            _screenEvent.emit(
+                                ScreenEvent.Navigate(
+                                    updateProfileScreenNavigationRoute
+                                )
+                            )
+                        } else {
+                            _screenEvent.emit(ScreenEvent.Navigate(homeNavigationRoute))
+                        }
+
 
                     }
+
+
                 }
         }
     }

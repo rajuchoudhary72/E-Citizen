@@ -10,7 +10,9 @@ import com.app.ecitizen.data.network.dto.OtpResponseDto
 import com.app.ecitizen.data.network.dto.PlaceDto
 import com.app.ecitizen.data.network.dto.ServiceDto
 import com.app.ecitizen.data.network.dto.SliderImage
+import com.app.ecitizen.data.network.dto.UpdateProfileDto
 import com.app.ecitizen.data.network.dto.UserDto
+import com.app.ecitizen.data.network.dto.UserRegisterResponseDto
 import com.app.ecitizen.features.place.ImportantPlaceUiState
 import kotlinx.coroutines.flow.Flow
 import retrofit2.http.Field
@@ -29,6 +31,25 @@ interface RetrofitService {
     fun sendOtp(
         @Field("phone_no") mobileNumber: String
     ): Flow<OtpResponseDto>
+
+    @POST("api/user-signup")
+    @FormUrlEncoded
+    fun createProfile(
+        @Header("latitude") latitude:String = "123.1241241",
+        @Header("longitude") longitude:String = "124.124124",
+        @Field("mobile") mobile: String,
+        @Field("name") name: String,
+        @Field("ward") ward: String,
+        @Field("colony") colony: String,
+    ): Flow<UserRegisterResponseDto>
+
+    @POST("api/user_profile_update")
+    @FormUrlEncoded
+    fun updateUserProfile(
+        @Field("name") name: String,
+        @Field("ward") ward: String,
+        @Field("colony") colony: String,
+    ): Flow<UpdateProfileDto>
 
     @POST("api/otp-match")
     @FormUrlEncoded

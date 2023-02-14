@@ -23,13 +23,17 @@ import com.app.ecitizen.features.download.downloadScreen
 import com.app.ecitizen.features.download.navigateToDownload
 import com.app.ecitizen.features.home.homeScreen
 import com.app.ecitizen.features.home.navigateToHome
+import com.app.ecitizen.features.imagePreview.imagePreviewScreen
+import com.app.ecitizen.features.imagePreview.navigateToImagePreview
 import com.app.ecitizen.features.noticeBoard.navigateToNotice
 import com.app.ecitizen.features.noticeBoard.navigateToNoticeBoard
 import com.app.ecitizen.features.noticeBoard.noticeBoardScreen
 import com.app.ecitizen.features.notification.notificationScreen
 import com.app.ecitizen.features.place.navigateToPlaces
 import com.app.ecitizen.features.place.placesScreen
+import com.app.ecitizen.features.profile.navigateToUpdateProfile
 import com.app.ecitizen.features.profile.profileScreen
+import com.app.ecitizen.features.profile.updateProfileScreenNavigationRoute
 import com.app.ecitizen.features.service.navigateToService
 import com.app.ecitizen.features.service.serviceScreen
 import com.app.ecitizen.features.splash.splashScreen
@@ -47,13 +51,13 @@ import com.app.ecitizen.features.telephone.telephoneDirectoryScreen
  */
 @Composable
 fun ECitizenNavHost(
-    navController:() -> NavHostController,
+    navController: () -> NavHostController,
     onBackClick: () -> Unit,
     openAppLocaleSettings: () -> Unit,
     closeSplashScreen: () -> Unit,
     modifier: Modifier = Modifier,
     startDestination: String = splashScreenNavigationRoute,
-    snackbarHostState:() -> SnackbarHostState,
+    snackbarHostState: () -> SnackbarHostState,
 ) {
     NavHost(
         navController = navController(),
@@ -79,7 +83,7 @@ fun ECitizenNavHost(
                 }
                 navController().navigateToHome(navOptions)
             },
-            navigateToLogin ={
+            navigateToLogin = {
                 val navOptions = navOptions {
                     // Pop up to the start destination of the graph to
                     // avoid building up a large stack of destinations
@@ -104,13 +108,16 @@ fun ECitizenNavHost(
             navigateToVerifyOtp = navController()::navigateToOtpVerification,
             openAppLocaleSettings = openAppLocaleSettings
         )
-        
+
         otpVerificationScreen(
             snackbarHostState(),
             navigateToHome = {
                 navController().navigateToHome()
             },
-            onBackClick = onBackClick
+            onBackClick = onBackClick,
+            navigateToUpdateProfile = {
+                navController().navigateToUpdateProfile(it)
+            }
         )
 
         homeScreen(
@@ -145,6 +152,7 @@ fun ECitizenNavHost(
                     R.string.telephone_directory -> {
                         navController().navigateToTelephoneDirectory()
                     }
+
                     R.string.about_us -> {
                         navController().navigateToAboutUs()
                     }
@@ -152,15 +160,43 @@ fun ECitizenNavHost(
 
             })
 
-        aboutUs (onBackClick)
+        aboutUs(onBackClick)
+
+        imagePreviewScreen(onBackClick)
 
         commOffice(onBackClick)
 
-        profileScreen(onBackClick)
+        profileScreen(
+            onBackClick = onBackClick,
+            navigateToUpdateProfile = { navController().navigateToUpdateProfile(it) },
+            navigateToHome = {
+                val navOptions = navOptions {
+                    // Pop up to the start destination of the graph to
+                    // avoid building up a large stack of destinations
+                    // on the back stack as users select items
+                    popUpTo(updateProfileScreenNavigationRoute) {
+                        saveState = true
+                        inclusive = true
+                    }
+                    // Avoid multiple copies of the same destination when
+                    // reselecting the same item
+                    launchSingleTop = true
+                    // Restore state when reselecting a previously selected item
+                    restoreState = true
+                }
+                navController().navigateToHome(navOptions)
+            }
+        )
 
-        noticeBoardScreen(onBackClick = onBackClick, navigateToNotice = {
-            navController().navigateToNotice(it)
-        })
+        noticeBoardScreen(
+            onBackClick = onBackClick,
+            navigateToNotice = {
+                navController().navigateToNotice(it)
+            },
+            navigateToImagePreview = {
+                navController().navigateToImagePreview(it)
+            }
+        )
 
         serviceScreen(
             onBackClick = onBackClick,
@@ -179,7 +215,10 @@ fun ECitizenNavHost(
         )
 
         advertisementScreen(
-            onBackClick = onBackClick
+            onBackClick = onBackClick,
+            navigateToImagePreview = {
+                navController().navigateToImagePreview(it)
+            }
         )
         notificationScreen(
             onBackClick = onBackClick

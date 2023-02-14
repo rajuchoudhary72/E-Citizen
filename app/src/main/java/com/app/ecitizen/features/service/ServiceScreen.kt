@@ -1,5 +1,6 @@
 package com.app.ecitizen.features.service
 
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,15 +25,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.app.ecitizen.R
-import com.app.ecitizen.data.network.dto.ServiceDto
 import com.app.ecitizen.ui.components.ErrorAndLoadingScreen
 import com.app.ecitizen.ui.theme.ECitizenTheme
 
@@ -41,7 +43,7 @@ fun ServiceScreenRoute(
     onBackClick: () -> Unit,
     serviceViewModel: ServiceViewModel = hiltViewModel(),
 ) {
-    val uiState:ServiceUiState by serviceViewModel.uiState.collectAsStateWithLifecycle()
+    val uiState: ServiceUiState by serviceViewModel.uiState.collectAsStateWithLifecycle()
     ServiceScreen(
         onBackClick = onBackClick,
         uiState = uiState
@@ -76,13 +78,16 @@ fun ServiceScreen(
         },
     ) { padding ->
 
-        when(uiState){
+        val context = LocalContext.current
+        when (uiState) {
             is ServiceUiState.Error -> {
                 ErrorAndLoadingScreen(error = uiState.appError)
             }
+
             ServiceUiState.Loading -> {
                 ErrorAndLoadingScreen(true)
             }
+
             is ServiceUiState.Success -> {
                 LazyVerticalGrid(
                     modifier = Modifier
@@ -95,11 +100,15 @@ fun ServiceScreen(
                 ) {
                     items(
                         uiState.services,
-                        key = {it.nameRes}
-                    ){service ->
-                        ServiceCardItem (
+                        key = { it.nameRes }
+                    ) { service ->
+                        ServiceCardItem(
                             service = service,
-                            onClickService = {}
+                            onClickService = {
+                                val intent = Intent(Intent.ACTION_VIEW)
+                                intent.data = service.url?.toUri()
+                                context.startActivity(intent)
+                            }
                         )
 
                     }

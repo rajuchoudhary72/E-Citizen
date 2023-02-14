@@ -51,67 +51,67 @@ class ServiceViewModel @Inject constructor(
             Service(
                 imgRes = R.drawable.ser1,
                 nameRes = R.string.service1,
-                url = service.buildingPlanApprove
+                url = service.service90A
             ),
             Service(
                 imgRes = R.drawable.ser2,
                 nameRes = R.string.service2,
-                url = service.buildingPlanApprove
+                url = service.tradeLicence
             ),
             Service(
                 imgRes = R.drawable.ser3,
                 nameRes = R.string.service3,
-                url = service.buildingPlanApprove
+                url = service.renewTradeLicence
             ),
             Service(
                 imgRes = R.drawable.ser4,
                 nameRes = R.string.service4,
-                url = service.buildingPlanApprove
+                url = service.sewerConnection
             ),
             Service(
                 imgRes = R.drawable.ser5,
                 nameRes = R.string.service5,
-                url = service.buildingPlanApprove
+                url = service.fireNoc
             ),
             Service(
                 imgRes = R.drawable.ser6,
                 nameRes = R.string.service6,
-                url = service.buildingPlanApprove
+                url = service.nameTransfer
             ),
             Service(
                 imgRes = R.drawable.ser7,
                 nameRes = R.string.service7,
-                url = service.buildingPlanApprove
+                url = service.signatureLicence
             ),
             Service(
                 imgRes = R.drawable.ser8,
                 nameRes = R.string.service8,
-                url = service.buildingPlanApprove
+                url = service.propertyTax
             ),
             Service(
                 imgRes = R.drawable.ser9,
                 nameRes = R.string.service9,
-                url = service.buildingPlanApprove
+                url = service.subDivision
             ),
             Service(
                 imgRes = R.drawable.ser10,
                 nameRes = R.string.service10,
-                url = service.buildingPlanApprove
+                url = service.propertyId
             ),
             Service(
                 imgRes = R.drawable.ser11,
                 nameRes = R.string.service11,
-                url = service.buildingPlanApprove
+                url = service.leaseDeposite
             ),
             Service(
                 imgRes = R.drawable.ser12,
                 nameRes = R.string.service12,
-                url = service.buildingPlanApprove
+                url = service.leasedeed
             ),
             Service(
                 imgRes = R.drawable.ser13,
                 nameRes = R.string.service13,
-                url = service.buildingPlanApprove
+                url = service.leasedeedReIssue
             ),
             Service(
                 imgRes = R.drawable.ser14,
@@ -121,12 +121,12 @@ class ServiceViewModel @Inject constructor(
             Service(
                 imgRes = R.drawable.ser3,
                 nameRes = R.string.service15,
-                url = service.buildingPlanApprove
+                url = service.dobRegistration
             ),
             Service(
                 imgRes = R.drawable.ser16,
                 nameRes = R.string.service16,
-                url = service.buildingPlanApprove
+                url = service.marriageReg
             ),
         )
     }

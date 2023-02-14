@@ -4,37 +4,37 @@ import com.google.gson.annotations.SerializedName
 
 data class UserDto(
     @SerializedName("admin_image")
-    val adminImage: Any?,
+    val adminImage: Any?=null,
     @SerializedName("api_access_token")
     val apiAccessToken: String,
     @SerializedName("colony")
     val colony: String,
     @SerializedName("country_code")
-    val countryCode: Any?,
+    val countryCode: Any?=null,
     @SerializedName("created_at")
-    val createdAt: String,
+    val createdAt: String?=null,
     @SerializedName("email")
-    val email: String,
+    val email: String?=null,
     @SerializedName("email_verified_at")
-    val emailVerifiedAt: String,
+    val emailVerifiedAt: String?=null,
     @SerializedName("id")
-    val id: Int,
+    val id: Int?=null,
     @SerializedName("latitude")
-    val latitude: String,
+    val latitude: String?=null,
     @SerializedName("longitude")
-    val longitude: String,
+    val longitude: String?=null,
     @SerializedName("mobile")
     val mobile: String,
     @SerializedName("name")
     val name: String,
     @SerializedName("otp")
-    val otp: Any?,
+    val otp: String?=null,
     @SerializedName("status")
-    val status: String,
+    val status: String?=null,
     @SerializedName("updated_at")
-    val updatedAt: String,
+    val updatedAt: String?=null,
     @SerializedName("user_type")
-    val userType: String,
+    val userType: String?=null,
     @SerializedName("ward")
     val ward: String
 )
