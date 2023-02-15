@@ -1,4 +1,4 @@
-package com.app.ecitizen.features.telephone.phoneBook
+package com.app.ecitizen.features.contact.ui
 
 import android.content.Intent
 import android.net.Uri
@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -37,6 +39,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.app.ecitizen.R
+import com.app.ecitizen.data.network.dto.AboutUsDto
 import com.app.ecitizen.data.network.dto.PhoneBookDto
 import com.app.ecitizen.ui.components.ErrorAndLoadingScreen
 import com.app.ecitizen.ui.theme.ECitizenTheme
@@ -44,18 +47,17 @@ import com.app.ecitizen.ui.theme.Teal90
 
 
 @Composable
-fun PhoneBookScreenRoute(
+fun ContactScreenRoute(
     onBackClick: () -> Unit,
-    phoneBookViewModel: PhoneBookViewModel = hiltViewModel(),
+    contactViewModel: ContactViewModel = hiltViewModel(),
 ) {
 
-    val uiState by phoneBookViewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by contactViewModel.uiState.collectAsStateWithLifecycle()
 
     PhoneBookScreen(
-        title = phoneBookViewModel.phoneBookType,
+        title = contactViewModel.type,
         uiState = uiState,
         onBackClick = onBackClick,
-
         )
 }
 
@@ -64,7 +66,7 @@ fun PhoneBookScreenRoute(
 fun PhoneBookScreen(
     onBackClick: () -> Unit,
     title: String,
-    uiState: PhoneBookUiState,
+    uiState: ContactUiState,
 ) {
 
     Scaffold(
@@ -88,15 +90,15 @@ fun PhoneBookScreen(
         },
     ) { padding ->
         when (uiState) {
-            is PhoneBookUiState.Error -> {
+            is ContactUiState.Error -> {
                 ErrorAndLoadingScreen(error = uiState.appError)
             }
 
-            PhoneBookUiState.Loading -> {
+            ContactUiState.Loading -> {
                 ErrorAndLoadingScreen(true)
             }
 
-            is PhoneBookUiState.Success -> {
+            is ContactUiState.Success -> {
 
                 val context = LocalContext.current
                 LazyColumn(
@@ -133,7 +135,7 @@ fun PhoneBookScreen(
 
 @Composable
 fun ContactCardItem(
-    contact: PhoneBookDto,
+    contact: AboutUsDto,
     onClickCall: () -> Unit,
     onClickMessage: () -> Unit
 ) {
@@ -158,9 +160,10 @@ fun ContactCardItem(
                 AsyncImage(
                     model = contact.fileUrl(),
                     modifier = Modifier
-                        .clip( shape = RoundedCornerShape(50))
+                        .clip( shape = RoundedCornerShape(10.dp))
                         .background(Color.LightGray)
-                        .size(50.dp),
+                        .height(80.dp)
+                        .width(70.dp),
                     placeholder = painterResource(id = R.drawable.outline_person_24),
                     error = painterResource(id = R.drawable.outline_person_24),
                     contentDescription = null,
@@ -176,35 +179,15 @@ fun ContactCardItem(
                     Text(
                         modifier = Modifier
                             .padding(end = 10.dp),
-                        text = contact.name ?: "",
+                        text = (contact.name + "(${contact.postType})"),
                         style = MaterialTheme.typography.titleMedium
                     )
 
                     Text(
                         modifier = Modifier,
-                        text = contact.phoneNo ?: "",
+                        text = contact.designation?:"",
                         style = MaterialTheme.typography.bodyMedium
                     )
-                }
-
-                Row {
-                    IconButton(
-                        onClick = onClickMessage
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.outline_chat_24),
-                            contentDescription = null
-                        )
-                    }
-
-                    IconButton(
-                        onClick = onClickCall
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.outline_local_phone_24),
-                            contentDescription = null
-                        )
-                    }
                 }
             }
 
@@ -219,7 +202,7 @@ fun NoticeScreenPreview() {
         PhoneBookScreen(
             onBackClick = {},
             title = "Phone Book",
-            uiState = PhoneBookUiState.Loading
+            uiState = ContactUiState.Success(mutableListOf(AboutUsDto(id = "12")))
         )
     }
 }

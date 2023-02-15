@@ -19,6 +19,9 @@ import com.app.ecitizen.features.commOffice.commOffice
 import com.app.ecitizen.features.complaint.navigateToRegisterComplaint
 import com.app.ecitizen.features.complaint.navigateToViewComplaint
 import com.app.ecitizen.features.complaint.registerComplaintScreen
+import com.app.ecitizen.features.contact.contactUsScreen
+import com.app.ecitizen.features.contact.navigateToContact
+import com.app.ecitizen.features.contact.navigateToContactUs
 import com.app.ecitizen.features.download.downloadScreen
 import com.app.ecitizen.features.download.navigateToDownload
 import com.app.ecitizen.features.home.homeScreen
@@ -154,7 +157,7 @@ fun ECitizenNavHost(
                     }
 
                     R.string.about_us -> {
-                        navController().navigateToAboutUs()
+                        navController().navigateToContactUs()
                     }
                 }
 
@@ -227,6 +230,11 @@ fun ECitizenNavHost(
         telephoneDirectoryScreen(
             onBackClick = onBackClick,
             navigateToPhoneBook = { navController().navigateToPhoneBook(it) }
+        )
+
+        contactUsScreen(
+            onBackClick = onBackClick,
+            navigateToPhoneBook = { navController().navigateToContact(it) }
         )
     }
 }

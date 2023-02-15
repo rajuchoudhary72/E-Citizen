@@ -2,6 +2,7 @@ package com.app.ecitizen.data
 
 import com.app.ecitizen.data.datastore.ECitizenPreferencesDataStore
 import com.app.ecitizen.data.network.RetrofitService
+import com.app.ecitizen.data.network.dto.AboutUsDto
 import com.app.ecitizen.data.network.dto.AdvertisementDto
 import com.app.ecitizen.data.network.dto.AppFront
 import com.app.ecitizen.data.network.dto.DownloadDto
@@ -120,5 +121,9 @@ class AppRepositoryImpl @Inject constructor(
 
     override fun getServicesData(): Flow<ServiceDto> {
         return retrofitService.getServicesData().map { it.data?.first()!! }
+    }
+
+    override fun getContactUs(type: String): Flow<List<AboutUsDto>> {
+        return retrofitService.getAboutUs(type).map { it.data?: emptyList() }
     }
 }

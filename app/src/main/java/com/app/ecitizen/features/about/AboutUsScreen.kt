@@ -44,7 +44,7 @@ fun AboutUsScreen(
             modifier = Modifier.fillMaxSize()
         ) {
             TopAppBar(
-                title = { Text(text = stringResource(id = R.string.about_us)) },
+                title = { Text(text = stringResource(id = R.string.contact_us)) },
                 backgroundColor = MaterialTheme.colorScheme.surface,
                 elevation = 0.dp,
                 navigationIcon = {

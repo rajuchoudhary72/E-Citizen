@@ -1,5 +1,6 @@
 package com.app.ecitizen.data.network
 
+import com.app.ecitizen.data.network.dto.AboutUsDto
 import com.app.ecitizen.data.network.dto.AdvertisementDto
 import com.app.ecitizen.data.network.dto.AppFront
 import com.app.ecitizen.data.network.dto.DownloadDto
@@ -84,4 +85,7 @@ interface RetrofitService {
 
     @GET("api/e-services")
     fun getServicesData(): Flow<NetworkResponse<List<ServiceDto>>>
+
+    @GET("api/get_about_us")
+    fun getAboutUs(@Query("search") search:String): Flow<NetworkResponse<List<AboutUsDto>>>
 }
