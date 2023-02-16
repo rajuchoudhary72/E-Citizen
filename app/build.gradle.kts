@@ -119,6 +119,8 @@ dependencies {
     implementation(libs.androidx.window)
 
     implementation(libs.lingver)
+    implementation (libs.androidx.localbroadcastmanager)
+
 
     androidTestImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.core)

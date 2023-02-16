@@ -1,5 +1,6 @@
 package com.app.ecitizen.data
 
+import android.content.Context
 import com.app.ecitizen.data.datastore.ECitizenPreferencesDataStore
 import com.app.ecitizen.data.network.RetrofitService
 import com.app.ecitizen.data.network.dto.AboutUsDto
@@ -14,12 +15,14 @@ import com.app.ecitizen.data.network.dto.ServiceDto
 import com.app.ecitizen.data.network.dto.SliderImage
 import com.app.ecitizen.data.network.dto.UserDto
 import com.app.ecitizen.model.repository.AppRepository
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class AppRepositoryImpl @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val retrofitService: RetrofitService,
     private val preferencesDataStore: ECitizenPreferencesDataStore
 ) : AppRepository {

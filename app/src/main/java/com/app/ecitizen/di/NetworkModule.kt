@@ -2,7 +2,7 @@ package com.app.ecitizen.di
 
 import com.app.ecitizen.BuildConfig
 import com.app.ecitizen.data.network.AuthTokenInterceptor
-import com.app.ecitizen.data.network.NetworkConnectionInterceptor
+import com.app.ecitizen.data.network.NetworkResponseInterceptor
 import com.app.ecitizen.data.network.RetrofitService
 import com.app.ecitizen.utils.FlowCallAdapterFactory
 import com.google.gson.Gson
@@ -10,7 +10,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -47,7 +46,7 @@ class NetworkModule {
     fun provideHttpClient(
         loggingInterceptor: HttpLoggingInterceptor,
         tokenAuthenticator: AuthTokenInterceptor,
-        networkConnectionInterceptor: NetworkConnectionInterceptor
+        networkConnectionInterceptor: NetworkResponseInterceptor
     ): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)

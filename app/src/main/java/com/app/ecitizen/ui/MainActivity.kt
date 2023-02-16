@@ -1,5 +1,9 @@
 package com.app.ecitizen.ui
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -17,6 +21,8 @@ import androidx.core.view.WindowCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.app.ecitizen.data.datastore.ECitizenPreferencesDataStore
 import com.app.ecitizen.ui.theme.ECitizenTheme
 import com.app.ecitizen.utils.NetworkMonitor
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -32,14 +38,30 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var networkMonitor: NetworkMonitor
 
+    private val viewModel: MainActivityViewModel by viewModels()
 
-   private val viewModel:MainActivityViewModel by viewModels()
+    @Inject
+    lateinit var preferencesDataStore: ECitizenPreferencesDataStore
+
+    private val logoutBroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(p0: Context?, p1: Intent?) {
+            when (p1?.extras?.get("action")) {
+                ACTION_LOGOUT -> {
+                    lifecycleScope.launch {
+                        preferencesDataStore.clearPreferences()
+                        finishAffinity()
+                        startActivity(Intent(this@MainActivity, MainActivity::class.java))
+                    }
+                }
+            }
+        }
+    }
 
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
-       val  splashScreen = installSplashScreen()
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
-
+        registerLogoutBroadcastReceiver()
 
         var uiState: MainActivityUiState by mutableStateOf(MainActivityUiState.Loading)
 
@@ -58,7 +80,9 @@ class MainActivity : ComponentActivity() {
             when (uiState) {
                 MainActivityUiState.Loading -> true
                 is MainActivityUiState.Success -> false
-                else -> {false}
+                else -> {
+                    false
+                }
             }
         }
 
@@ -85,5 +109,23 @@ class MainActivity : ComponentActivity() {
                 )
             }
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        unRegisterLogoutBroadcastReceiver()
+    }
+    private fun registerLogoutBroadcastReceiver() {
+        LocalBroadcastManager.getInstance(this)
+            .registerReceiver(logoutBroadcastReceiver, IntentFilter(APP_LOCAL_BROADCAST))
+    }
+
+    private fun unRegisterLogoutBroadcastReceiver() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(logoutBroadcastReceiver)
+    }
+
+    companion object {
+        const val APP_LOCAL_BROADCAST = "app_local_broadcast"
+        const val ACTION_LOGOUT = "logout"
     }
 }

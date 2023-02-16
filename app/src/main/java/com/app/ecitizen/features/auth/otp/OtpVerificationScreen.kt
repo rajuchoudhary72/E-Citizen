@@ -26,10 +26,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.paint
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -65,21 +65,23 @@ fun OtpVerificationRoute(
         isOtpFilled = otpViewModel.otp.length == 4
     }
 
-    LaunchedEffect(true){
+    LaunchedEffect(true) {
         otpViewModel
             .screenEvent
             .collectLatest { event ->
-                when(event) {
+                when (event) {
                     is ScreenEvent.Navigate -> {
-                        if (event.route== updateProfileScreenNavigationRoute) {
+                        if (event.route == updateProfileScreenNavigationRoute) {
                             navigateToUpdateProfile(otpViewModel.mobileNumber)
-                        }else{
+                        } else {
                             navigateToHome()
                         }
                     }
+
                     is ScreenEvent.ShowSnackbar.MessageResId -> {
                         snackbarHostState.showSnackbar(context.getString(event.resId))
                     }
+
                     is ScreenEvent.ShowSnackbar.MessageString -> {
                         snackbarHostState.showSnackbar(event.value)
                     }
@@ -104,7 +106,7 @@ fun OtpVerificationRoute(
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun OtpVerificationScreen(
     modifier: Modifier,
@@ -119,6 +121,9 @@ fun OtpVerificationScreen(
     otpVerificationLoading: Boolean,
     otpResendLoading: Boolean
 ) {
+
+    val keyboard = LocalSoftwareKeyboardController.current
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -188,14 +193,17 @@ fun OtpVerificationScreen(
                     .padding(top = 40.dp)
                     .height(50.dp),
 
-            )
+                )
         } else {
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 40.dp)
                     .height(50.dp),
-                onClick = verifyOtp,
+                onClick = {
+                    keyboard?.hide()
+                    verifyOtp()
+                },
                 shape = MaterialTheme.shapes.extraSmall,
                 enabled = isOtpFilled
             ) {
@@ -204,14 +212,14 @@ fun OtpVerificationScreen(
         }
 
 
-        if(otpResendLoading){
+        if (otpResendLoading) {
             CircularProgressIndicator(
                 modifier = Modifier
                     .padding(top = 40.dp)
                     .height(50.dp),
 
                 )
-        }else{
+        } else {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -229,8 +237,6 @@ fun OtpVerificationScreen(
                 }
             }
         }
-
-
 
 
     }

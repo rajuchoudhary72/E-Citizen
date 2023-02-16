@@ -9,4 +9,6 @@ data class NetworkResponse<T>(
     val message: String,
     @SerializedName("status")
     val status: Int
-)
+){
+    
+}
