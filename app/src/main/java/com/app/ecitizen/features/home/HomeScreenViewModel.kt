@@ -1,5 +1,6 @@
 package com.app.ecitizen.features.home
 
+import android.content.Context
 import androidx.annotation.DrawableRes
 import androidx.annotation.Keep
 import androidx.annotation.StringRes
@@ -23,6 +24,7 @@ import com.app.ecitizen.ui.theme.Red80
 import com.app.ecitizen.ui.theme.Teal80
 import com.app.ecitizen.utils.toLoadingState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -78,7 +80,7 @@ class HomeScreenViewModel @Inject constructor(
 
 data class Service(
     @StringRes val name: Int,
-    val description: String,
+    val description: Int,
     val backgroundColor: Color,
     @DrawableRes val icon: Int
 ) {
@@ -88,49 +90,49 @@ data class Service(
 
             Service(
                 name = R.string.notice_board,
-                description = "Announcement or Intimation of something happening in office.",
+                description = R.string.announcement_or_intimation_of_something_happening_in_office,
                 backgroundColor = Blue80,
                 icon = R.drawable.outline_sticky_note_2_24
             ),
             Service(
                 name = R.string.services,
-                description = "Committed for disposal of service in speedy and transparent manner.",
+                description = R.string.committed_for_disposal_of_service_in_speedy_and_transparent_manner,
                 backgroundColor = DarkGreen80,
                 icon = R.drawable.outline_miscellaneous_services_24
             ),
             Service(
                 name = R.string.downloads,
-                description = "Citizen can download tne application form here.",
+                description = R.string.citizen_can_download_tne_application_form_here,
                 backgroundColor = Teal80,
                 icon = R.drawable.outline_cloud_download_24
             ),
             Service(
                 name = R.string.important_places,
-                description = "Citizen can check important places within in our Nagar Palika.",
+                description = R.string.citizen_can_check_important_places_within_in_our_nagar_palika,
                 backgroundColor = DarkPurpleGray90,
                 icon = R.drawable.outline_place_24
             ),
             Service(
                 name = R.string.register_complaints,
-                description = "Register you complaint so we can serve you better.",
+                description = R.string.register_you_complaint_so_we_can_serve_you_better,
                 backgroundColor = Green80,
                 icon = R.drawable.baseline_app_registration_24
             ),
             Service(
                 name = R.string.advertisements,
-                description = "You can watch advertisement of information and schemes to Citizens",
+                description = R.string.you_can_watch_advertisement_of_information_and_schemes_to_citizens,
                 backgroundColor = Orange80,
                 icon = R.drawable.outline_live_tv_24
             ),
             Service(
                 name = R.string.telephone_directory,
-                description = "Check telephone directory of government officials, office and ward members.",
+                description = R.string.check_telephone_directory_of_government_officials_office_and_ward_members,
                 backgroundColor = Purple80,
                 icon = R.drawable.outline_contact_phone_24
             ),
             Service(
                 name = R.string.about_us,
-                description = "Check more about us.",
+                description = R.string.check_more_about_us,
                 backgroundColor = Red80,
                 icon = R.drawable.outline_account_circle_24
             )

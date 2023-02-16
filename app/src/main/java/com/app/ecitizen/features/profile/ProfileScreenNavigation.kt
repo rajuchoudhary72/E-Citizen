@@ -34,11 +34,13 @@ fun NavGraphBuilder.profileScreen(
     onBackClick: () -> Unit,
     navigateToUpdateProfile: (String) -> Unit,
     navigateToHome: () -> Unit,
+    showAppLocaleDialog: () -> Unit,
 ) {
     composable(route = profileScreenNavigationRoute) {
         ProfileScreenRoute(
             onBackClick = onBackClick,
-            navigateToUpdateProfile = navigateToUpdateProfile
+            navigateToUpdateProfile = navigateToUpdateProfile,
+            showAppLocaleDialog = showAppLocaleDialog
         )
     }
     composable(  route = "$updateProfileScreenNavigationRoute/{${mobileNumberArg}}") {

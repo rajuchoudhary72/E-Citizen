@@ -5,6 +5,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Environment
 import android.widget.Toast
+import com.app.ecitizen.R
 
 
 fun Context.downloadFile(url: String, fileName: String, desc: String) {
@@ -19,5 +20,5 @@ fun Context.downloadFile(url: String, fileName: String, desc: String) {
     val downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
     downloadManager.enqueue(request)
 
-    Toast.makeText(this, "Download started, to check download status check status bar.", Toast.LENGTH_SHORT).show()
+    Toast.makeText(this, getString(R.string.download_started_to_check_download_status_check_status_bar), Toast.LENGTH_SHORT).show()
 }

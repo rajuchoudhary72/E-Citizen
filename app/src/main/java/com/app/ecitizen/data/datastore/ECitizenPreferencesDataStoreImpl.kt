@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.app.ecitizen.data.network.dto.AppFront
 import com.app.ecitizen.data.network.dto.UserDto
+import com.app.ecitizen.model.AppLocale
 import com.google.gson.Gson
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
@@ -22,6 +23,18 @@ class ECitizenPreferencesDataStoreImpl @Inject constructor(
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
     override suspend fun getAuthToken(): String? {
         return getUserDtoFlow().first()?.apiAccessToken
+    }
+
+    override suspend fun setAppLocale(appLocale: AppLocale) {
+        context.dataStore.edit { userSession ->
+            userSession[APP_LOCALE] = appLocale.code
+        }
+    }
+
+    override suspend fun getAppLocale(): AppLocale {
+        return context.dataStore.data.map { userSession ->
+            AppLocale.getAppLocale(userSession[APP_LOCALE])
+        }.first()
     }
 
     override suspend fun saveUserData(userDto: UserDto) {
@@ -65,5 +78,6 @@ class ECitizenPreferencesDataStoreImpl @Inject constructor(
     companion object {
         private val USER_DATA = stringPreferencesKey("user_data")
         private val APP_FRONT = stringPreferencesKey("app_front")
+        private val APP_LOCALE = stringPreferencesKey("app_locale")
     }
 }

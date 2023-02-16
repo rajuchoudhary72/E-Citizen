@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Aaapno Khandela</string>
+    <string name="app_name" translatable="false">Aaapno Khandela</string>
     <string name="not_connected">⚠️ You aren’t connected to the internet</string>
-
     <string name="error_network">A network error has occurred. Please try again.</string>
     <string name="error_no_internet_connection">Please check your internet connection. Please try again.</string>
     <string name="error_server">A server error has occurred. Please try again.</string>
     <string name="error_unknown">An unknown error has occurred. Please try again.</string>
     <string name="error_auth">You do not have permissions to access the service.</string>
-
-
-    <!--Login-->
     <string name="login">Login</string>
     <string name="mobile_number">Mobile Number</string>
     <string name="password">Password</string>
@@ -19,21 +15,19 @@
     <string name="register">Register</string>
     <string name="or">OR</string>
     <string name="continue_">Continue</string>
-    <string name="submit">Sumbit</string>
+    <string name="submit">Submit</string>
     <string name="resend_code">Resend Code</string>
     <string name="haven_t_you_received_the_sms">Haven\'t you received the SMS?</string>
     <string name="verification_code">Verification Code</string>
     <string name="we_have_sent_the_code_verification_to_your_mobile_number">We have sent the code verification to Your Mobile Number.</string>
     <string name="my_language">My Language</string>
-    <string name="hindi">Hindi</string>
-    <string name="english">English</string>
+    <string name="hindi" translatable="false">हिंदी</string>
+    <string name="english" translatable="false">English</string>
     <string name="home">Home</string>
-    <string name="commissioner_office">Commi Office</string>
+    <string name="commissioner_office">Commi. Office</string>
     <string name="contact_us">Contact Us</string>
     <string name="profile">Profile</string>
     <string name="update_profile">Update Profile</string>
-
-
     <string name="notice_board">Notice Board</string>
     <string name="services">Services</string>
     <string name="downloads">Downloads</string>
@@ -58,14 +52,13 @@
     <string name="full_name">Full Name</string>
     <string name="logout">Logout</string>
     <string name="notifications">Notifications</string>
-    <string name="khandela_nagar_palika">Khandela Nagar Palika</string>
+    <string name="khandela_nagar_palika">Khandela Nagar-Palika</string>
     <string name="loading">Loading…</string>
     <string name="complaint_type">Complaint Type</string>
     <string name="enter_your_mobile_number">Enter your mobile number</string>
     <string name="we_will_send_you_a_conformation_code">We will send you a conformation code</string>
     <string name="otp_verification">OTP Verification</string>
     <string name="no_item_found">No item found!</string>
-
     <string name="general_notice">General Notice</string>
     <string name="suggestion">Suggestion</string>
     <string name="scheme">Scheme</string>
@@ -74,8 +67,6 @@
     <string name="ward_validation_msg">Please enter your ward number.</string>
     <string name="colony_validation_msg">Please enter your colony address.</string>
     <string name="download">Download</string>
-
-
     <string name="service1">Change of land use - 90A</string>
     <string name="service2">Trade Licence</string>
     <string name="service3">Renew Trade Licence</string>
@@ -93,7 +84,6 @@
     <string name="service15">Birth -death Registration</string>
     <string name="service16">Marriage Registration</string>
     <string name="view">View</string>
-
     <string name="indra_rasoi">Indra Rasoi Meals @8 Rs</string>
     <string name="public_parks">Public Parks</string>
     <string name="parking">Parking</string>
@@ -101,12 +91,20 @@
     <string name="community_halls">Community Halls</string>
     <string name="aashray_sthal">Aashray Sthal</string>
     <string name="tourism_places">Tourism Places</string>
-
     <string name="chairman">Chairman</string>
     <string name="commissioner">Commissioner</string>
     <string name="office_employees">Office employees</string>
     <string name="office_a_glance">Office a Glance</string>
     <string name="ward_members">Ward members</string>
-
-
+    <string name="no_data_found">No data found!</string>
+    <string name="otp_match_successfully">Otp match successfully !</string>
+    <string name="download_started_to_check_download_status_check_status_bar">Download started, to check download status check status bar.</string>
+    <string name="announcement_or_intimation_of_something_happening_in_office">Announcement or Intimation of something happening in office.</string>
+    <string name="committed_for_disposal_of_service_in_speedy_and_transparent_manner">Committed for disposal of service in speedy and transparent manner.</string>
+    <string name="citizen_can_download_tne_application_form_here">Citizen can download tne application form here.</string>
+    <string name="citizen_can_check_important_places_within_in_our_nagar_palika">Citizen can check important places within in our Nagar Palika.</string>
+    <string name="register_you_complaint_so_we_can_serve_you_better">Register you complaint so we can serve you better.</string>
+    <string name="you_can_watch_advertisement_of_information_and_schemes_to_citizens">You can watch advertisement of information and schemes to Citizens</string>
+    <string name="check_telephone_directory_of_government_officials_office_and_ward_members">Check telephone directory of government officials, office and ward members.</string>
+    <string name="check_more_about_us">Check more about us.</string>
 </resources>

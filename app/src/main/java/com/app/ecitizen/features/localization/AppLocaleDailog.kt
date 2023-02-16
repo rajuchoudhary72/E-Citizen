@@ -1,5 +1,6 @@
 package com.app.ecitizen.features.localization
 
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,11 +16,13 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
@@ -30,7 +33,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.app.ecitizen.R
 import com.app.ecitizen.model.AppLocale
+import com.app.ecitizen.ui.MainActivity
 import com.app.ecitizen.ui.theme.ECitizenTheme
+import com.yariksoffice.lingver.Lingver
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun AppLocaleDialog(
@@ -39,9 +45,24 @@ fun AppLocaleDialog(
 ) {
     val appLocaleUiState by viewModel.appLocaleUiState.collectAsStateWithLifecycle()
 
+    val context = LocalContext.current
+
+    LaunchedEffect(true ){
+        viewModel.changedLocale.collectLatest {locale ->
+            locale?.let {
+                Lingver.getInstance().setLocale(
+                    context, it.code
+                )
+                val i = Intent(context, MainActivity::class.java)
+                context.startActivity(i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK))
+            }
+        }
+    }
+
     AppLocaleDialog(
         appLocaleUiState = appLocaleUiState,
-        onDismiss = onDismiss
+        onDismiss = onDismiss,
+        updateLocale = viewModel::updateAppLocale
     )
 }
 
@@ -50,6 +71,7 @@ fun AppLocaleDialog(
 fun AppLocaleDialog(
     appLocaleUiState: AppLocaleUiState,
     onDismiss: () -> Unit,
+    updateLocale: (AppLocale) -> Unit,
 ) {
     val configuration = LocalConfiguration.current
 
@@ -76,7 +98,7 @@ fun AppLocaleDialog(
                             AppLocaleGridItem(
                                 appLocale = appLocale,
                                 isSelected = appLocaleUiState.selectedAppLocale == appLocale,
-                                chooseLocale = {}
+                                chooseLocale = {updateLocale(appLocale)}
                             )
                         }
                     }
@@ -129,7 +151,8 @@ fun AppLocaleDialogPreview() {
                 appLocale = AppLocale.values().toList(),
                 selectedAppLocale = AppLocale.HINDI
             ),
-            onDismiss = {}
+            onDismiss = {},
+            updateLocale = {},
         )
     }
 }

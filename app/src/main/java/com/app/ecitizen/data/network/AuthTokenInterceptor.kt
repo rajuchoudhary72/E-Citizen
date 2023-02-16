@@ -19,10 +19,14 @@ class AuthTokenInterceptor @Inject constructor(
     override fun intercept(chain: Interceptor.Chain): Response {
         val requestBuilder = chain.request().newBuilder()
 
-
         requestBuilder.addHeader("Content-Type", "application/json")
         requestBuilder.addHeader("accept", "application/json")
-        requestBuilder.addHeader("language", "hi")
+
+        runBlocking {
+            preferencesDataStore.getAppLocale().code
+        }.let {
+            requestBuilder.addHeader("language", it)
+        }
 
 
         runBlocking {

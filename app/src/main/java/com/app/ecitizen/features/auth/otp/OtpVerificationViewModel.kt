@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.app.ecitizen.R
 import com.app.ecitizen.features.auth.OtpVerificationArgs
 import com.app.ecitizen.features.home.homeNavigationRoute
 import com.app.ecitizen.features.profile.updateProfileScreenNavigationRoute
@@ -65,8 +66,8 @@ class OtpVerificationViewModel @Inject constructor(
                         val user = state.getValueOrNull()
 
                         _screenEvent.emit(
-                            ScreenEvent.ShowSnackbar.MessageString(
-                                "Otp match successfully !"
+                            ScreenEvent.ShowSnackbar.MessageResId(
+                              R.string.otp_match_successfully
                             )
                         )
 

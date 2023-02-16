@@ -49,6 +49,7 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun ProfileScreenRoute(
     onBackClick: () -> Unit,
+    showAppLocaleDialog: () -> Unit,
     profileScreenViewModel: ProfileScreenViewModel = hiltViewModel(),
     navigateToUpdateProfile: (String) -> Unit,
 ) {
@@ -81,7 +82,8 @@ fun ProfileScreenRoute(
         onBackClick,
         user,
         navigateToUpdateProfile = { navigateToUpdateProfile(user!!.mobile) },
-        logout = profileScreenViewModel::logout
+        logout = profileScreenViewModel::logout,
+        showAppLocaleDialog = showAppLocaleDialog
     )
 }
 
@@ -92,6 +94,7 @@ fun ProfileScreen(
     user: UserDto?,
     navigateToUpdateProfile: () -> Unit,
     logout: () -> Unit,
+    showAppLocaleDialog: () -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -112,7 +115,7 @@ fun ProfileScreen(
                 },
                 actions = {
 
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = showAppLocaleDialog) {
                         Icon(imageVector = Icons.Outlined.GTranslate, contentDescription = null)
                     }
 
@@ -266,6 +269,6 @@ fun ProfileScreen(
 @Composable
 fun SplashScreenPreview() {
     ECitizenTheme {
-        ProfileScreen({}, null, { }, { })
+        ProfileScreen({}, null, { }, { }, { })
     }
 }

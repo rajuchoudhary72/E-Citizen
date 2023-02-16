@@ -132,7 +132,7 @@ fun AdvertisementScreen(
 
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(text = "No data found!")
+                        Text(text = stringResource(R.string.no_data_found))
                     }
 
                 } else {

@@ -220,7 +220,7 @@ fun ServicesCard(
 
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = service.description,
+                text = stringResource(id = service.description),
                 style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Light),
             )
 

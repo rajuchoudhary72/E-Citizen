@@ -188,7 +188,8 @@ fun ECitizenNavHost(
                     restoreState = true
                 }
                 navController().navigateToHome(navOptions)
-            }
+            },
+            showAppLocaleDialog = openAppLocaleSettings
         )
 
         noticeBoardScreen(
