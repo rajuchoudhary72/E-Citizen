@@ -36,7 +36,7 @@ data class ContactUs(
             ContactUs(
                 icon = R.drawable.about_us_emp,
                 name = R.string.chairman,
-                searchKey = "Chairman"
+                searchKey = "chairman"
             ),
             ContactUs(
                 icon = R.drawable.about_us_emp,
@@ -46,12 +46,12 @@ data class ContactUs(
             ContactUs(
                 icon = R.drawable.about_us_emp,
                 name = R.string.office_employees,
-                searchKey = "Office employees"
+                searchKey = "Office Employee"
             ),
             ContactUs(
                 icon = R.drawable.about_us_emp,
                 name = R.string.office_a_glance,
-                searchKey = "Office a Glance"
+                searchKey = "Office a glance"
             ),
         )
     }

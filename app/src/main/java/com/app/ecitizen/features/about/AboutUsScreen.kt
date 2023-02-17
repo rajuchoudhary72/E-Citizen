@@ -60,22 +60,21 @@ fun AboutUsScreen(
             Spacer(modifier = Modifier.height(20.dp))
 
             InfoRow(
-                title = "Executive Officer",
-                description = "Mrs. Mamta Choudhary,\n" +
-                        "Suresh Kumar Chouhan"
+                title = stringResource(R.string.khandela_contact_person),
+                description = stringResource(R.string.name_officer),
             )
 
             InfoRow(
-                title = "Address",
-                description = "near bus stand, Bhoji Ki Dhani, Khandela, Rajasthan 332909"
+                title = stringResource(R.string.address_palikha),
+                description = stringResource(R.string.address_plakha)
             )
 
             InfoRow(
-                title = "Phone Number",
+                title = stringResource(R.string.phone_number_palikha),
                 description = "01575-260029"
             )
             InfoRow(
-                title = "Email",
+                title = stringResource(R.string.comiss_email),
                 description = "khandela.ulb@gmail.com"
             )
 

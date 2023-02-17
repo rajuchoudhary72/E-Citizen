@@ -60,25 +60,25 @@ fun CommOfficeScreen(
             Spacer(modifier = Modifier.height(20.dp))
 
             InfoRow(
-                title = "Nodal Officer",
-                description = "Mohammad Yakub Malkan"
+                title = stringResource(R.string.nodal_officer),
+                description = stringResource(R.string.nodal_officer_name)
             )
 
             InfoRow(
-                title = "Designation",
-                description = "Executive Officer"
+                title = stringResource(R.string.designation),
+                description = stringResource(R.string.commiss_rank)
             )
 
             InfoRow(
-                title = "Phone Number",
+                title = stringResource(R.string.comiss_phone),
                 description = "01575-260029"
             )
             InfoRow(
-                title = "Mobile Number",
+                title = stringResource(R.string.comiss_mobile_no),
                 description = "9414444946"
             )
             InfoRow(
-                title = "Email",
+                title = stringResource(R.string.comiss_email),
                 description = "khandela.ulb@gmail.com"
             )
 

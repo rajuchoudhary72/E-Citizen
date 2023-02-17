@@ -86,7 +86,7 @@
     <string name="parking">पार्किंग</string>
     <string name="public_toilets">सार्वजनिक शौचालय</string>
     <string name="community_halls">कम्युनिटी हॉल</string>
-    <string name="aashray_sthal">Aashray Sthal</string>
+    <string name="aashray_sthal">आश्रय स्थल</string>
     <string name="tourism_places">पर्यटन स्थल</string>
     <string name="chairman">अध्यक्ष</string>
     <string name="commissioner">आयुक्त</string>
@@ -123,6 +123,18 @@
     <string name="close_complaint">शिकायत बंद करें</string>
     <string name="status">दर्जा</string>
     <string name="closed">बंद किया हुआ</string>
+    <string name="nodal_officer">नोडल अधिकारी</string>
+    <string name="nodal_officer_name">मोहम्मद याकूब मलकान</string>
+    <string name="designation">पद</string>
+    <string name="commiss_rank">कार्यकारी अधिकारी</string>
+    <string name="comiss_phone">फ़ोन नंबर</string>
+    <string name="comiss_mobile_no">मोबाइल नंबर</string>
+    <string name="comiss_email">ईमेल</string>
+    <string name="khandela_contact_person">कार्यकारी अधिकारी</string>
+    <string name="address_palikha">पता</string>
+    <string name="phone_number_palikha">फ़ोन नंबर</string>
+    <string name="address_plakha">बस स्टैंड के पास, भोजी की ढाणी, खंडेला, राजस्थान 332909</string>
+    <string name="name_officer">श्रीमती ममता चौधरी\nसुरेश कुमार चौहान</string>
     <string name="login_as_service_provider">सेवा प्रदाता के रूप में लॉगिन करें</string>
     <string name="login_as_citizen">नागरिक के रूप में लॉगिन करें</string>
     <string name="password_validation_msg">पासवर्ड दर्ज करना आवश्यक है।</string>
