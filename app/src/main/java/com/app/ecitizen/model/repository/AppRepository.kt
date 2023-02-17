@@ -1,8 +1,10 @@
 package com.app.ecitizen.model.repository
 
+import android.net.Uri
 import com.app.ecitizen.data.network.dto.AboutUsDto
 import com.app.ecitizen.data.network.dto.AdvertisementDto
 import com.app.ecitizen.data.network.dto.AppFront
+import com.app.ecitizen.data.network.dto.Complaint
 import com.app.ecitizen.data.network.dto.DownloadDto
 import com.app.ecitizen.data.network.dto.NoticeDto
 import com.app.ecitizen.data.network.dto.NotificationDto
@@ -12,6 +14,7 @@ import com.app.ecitizen.data.network.dto.ServiceDto
 import com.app.ecitizen.data.network.dto.SliderImage
 import com.app.ecitizen.data.network.dto.UserDto
 import kotlinx.coroutines.flow.Flow
+import java.io.File
 
 interface AppRepository {
     fun getAppFronts(): Flow<List<AppFront>>
@@ -50,4 +53,19 @@ interface AppRepository {
     fun getServicesData(): Flow<ServiceDto>
 
     fun getContactUs(type: String): Flow<List<AboutUsDto>>
+
+    fun getComplaints(): Flow<List<Complaint>>
+
+    fun registerCompliant(
+        headline:String,
+        ward: String,
+        houseNo:String,
+        colony: String,
+        street:String,
+        note:String,
+        complaintNo:String,
+        photo: File
+    ):Flow<String>
+
+    abstract fun closeComplaint(id: String): Flow<String>
 }

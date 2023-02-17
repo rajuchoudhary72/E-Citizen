@@ -215,7 +215,10 @@ fun ECitizenNavHost(
         )
 
         registerComplaintScreen(
-            onBackClick = onBackClick
+            onBackClick = onBackClick,
+            navigateToImagePreview = {
+                navController().navigateToImagePreview(it)
+            }
         )
 
         advertisementScreen(

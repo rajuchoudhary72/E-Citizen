@@ -107,4 +107,25 @@
     <string name="you_can_watch_advertisement_of_information_and_schemes_to_citizens">You can watch advertisement of information and schemes to Citizens</string>
     <string name="check_telephone_directory_of_government_officials_office_and_ward_members">Check telephone directory of government officials, office and ward members.</string>
     <string name="check_more_about_us">Check more about us.</string>
+
+    <string name="garbage_vehicle_not_arrived">Garbage vehicle not arrived</string>
+    <string name="garbage_dump">Garbage  dump</string>
+    <string name="dustbins_not_cleaned">Dustbins not cleaned</string>
+    <string name="dead_animal">Dead animal(s)</string>
+    <string name="overflow_of_sewerage_or_storm_water">Overflow of Sewerage or storm water</string>
+    <string name="overflow_of_septic_tanks_new">Overflow of Septic tanks (New)</string>
+    <string name="yellow_spot">Yellow Spot (Public Urination Spot)</string>
+    <string name="sweeping_not_done">Sweeping not done</string>
+    <string name="no_electricity_in_public_toilet">No electricity in public toilet(s)</string>
+    <string name="no_water_supply_in_public_toilet">No water supply in public toilet(s)</string>
+    <string name="public_toilet_blockage">Public toilet(s) blockage</string>
+    <string name="public_toilet_cleaning">Public toilet(s) cleaning</string>
+    <string name="open_manholes_or_drains">Open Manholes or Drains</string>
+    <string name="stagnant_water_on_the_road">Stagnant water on the Road</string>
+    <string name="address">Address</string>
+    <string name="id">ID</string>
+    <string name="close_complaint">Close Complaint</string>
+    <string name="status">Status</string>
+    <string name="closed">Closed</string>
+
 </resources>

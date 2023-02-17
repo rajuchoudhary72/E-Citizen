@@ -104,4 +104,23 @@
     <string name="you_can_watch_advertisement_of_information_and_schemes_to_citizens">आप नागरिकों को सूचना और योजनाओं के विज्ञापन देख सकते हैं</string>
     <string name="check_telephone_directory_of_government_officials_office_and_ward_members">सरकारी अधिकारियों, कार्यालय और वार्ड सदस्यों की टेलीफोन निर्देशिका की जाँच करें।</string>
     <string name="check_more_about_us">हमारे बारे में और जानें।</string>
+    <string name="garbage_vehicle_not_arrived">कचरा वाहन नहीं आया</string>
+    <string name="garbage_dump">कूड़ा डालना</string>
+    <string name="dustbins_not_cleaned">कूड़ेदानों की सफाई नहीं हुई</string>
+    <string name="dead_animal">मरे हुए जानवर</string>
+    <string name="overflow_of_sewerage_or_storm_water">सीवरेज या तूफान के पानी का अतिप्रवाह</string>
+    <string name="overflow_of_septic_tanks_new">सेप्टिक टैंक का अतिप्रवाह (नया)</string>
+    <string name="yellow_spot">पीला धब्बा (सार्वजनिक मूत्र त्याग स्थल)</string>
+    <string name="sweeping_not_done">झाडू नहीं लगाई गई है</string>
+    <string name="no_electricity_in_public_toilet">सार्वजनिक शौचालयों में बिजली नहीं</string>
+    <string name="no_water_supply_in_public_toilet">सार्वजनिक शौचालयों में पानी की आपूर्ति नहीं</string>
+    <string name="public_toilet_blockage">सार्वजनिक शौचालय अवरूद्ध</string>
+    <string name="open_manholes_or_drains">खुले मैनहोल या नालियां</string>
+    <string name="stagnant_water_on_the_road">सड़क पर जमा पानी</string>
+    <string name="public_toilet_cleaning">सार्वजनिक शौचालयों की सफाई</string>
+    <string name="address">पता</string>
+    <string name="id">ID</string>
+    <string name="close_complaint">शिकायत बंद करें</string>
+    <string name="status">दर्जा</string>
+    <string name="closed">बंद किया हुआ</string>
 </resources>

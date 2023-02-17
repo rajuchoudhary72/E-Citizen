@@ -95,14 +95,14 @@ fun AppError.stringRes() = when (this) {
 
 fun AppError.toScreenEvent(): ScreenEvent {
   return  if (this is AppError.ApiException.BadRequestException) {
-        ScreenEvent.ShowSnackbar.MessageString((this.cause as BadRequestException).apiError.message)
+        ScreenEvent.ShowSnackbar.MessageString((this.cause as BadRequestException).apiError.message?:"Unknown Error")
     } else {
         ScreenEvent.ShowSnackbar.MessageResId(this.stringRes())
     }
 }
 fun AppError.toTextValue(): TextValue {
   return  if (this is AppError.ApiException.BadRequestException) {
-      TextValue.Text((this.cause as BadRequestException).apiError.message)
+      TextValue.Text((this.cause as BadRequestException).apiError.message?:"Unknown Error")
     } else {
       TextValue.TextResId(this.stringRes())
     }

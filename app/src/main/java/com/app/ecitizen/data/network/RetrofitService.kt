@@ -3,6 +3,7 @@ package com.app.ecitizen.data.network
 import com.app.ecitizen.data.network.dto.AboutUsDto
 import com.app.ecitizen.data.network.dto.AdvertisementDto
 import com.app.ecitizen.data.network.dto.AppFront
+import com.app.ecitizen.data.network.dto.Complaint
 import com.app.ecitizen.data.network.dto.DownloadDto
 import com.app.ecitizen.data.network.dto.NetworkResponse
 import com.app.ecitizen.data.network.dto.NoticeDto
@@ -17,11 +18,15 @@ import com.app.ecitizen.data.network.dto.UserDto
 import com.app.ecitizen.data.network.dto.UserRegisterResponseDto
 import com.app.ecitizen.features.place.ImportantPlaceUiState
 import kotlinx.coroutines.flow.Flow
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Query
 
 interface RetrofitService {
@@ -88,4 +93,25 @@ interface RetrofitService {
 
     @GET("api/get_about_us")
     fun getAboutUs(@Query("search") search:String): Flow<NetworkResponse<List<AboutUsDto>>>
+
+    @GET("api/complain_close")
+    fun closeComplaint(@Query("id") id:String): Flow<NetworkResponse<List<String>>>
+
+    @Multipart
+    @POST("api/user_complain_update")
+    fun registerComplaint(
+        @Part("complain_heading") complainHeading: RequestBody,
+        @Part("complain_sr_no") complainSrNo: RequestBody,
+        @Part("house_no") house: RequestBody,
+        @Part("colony_name") colony: RequestBody,
+        @Part("street_name") street: RequestBody,
+        @Part("notes") note: RequestBody,
+        @Part("zone_no") zone: RequestBody,
+        @Part("ward_no") ward: RequestBody,
+        @Part file: MultipartBody.Part,
+    ): Flow<NetworkResponse<String>>
+
+    @GET("api/get_user_complain")
+    fun getComplaints(): Flow<NetworkResponse<List<Complaint>>>
+
 }

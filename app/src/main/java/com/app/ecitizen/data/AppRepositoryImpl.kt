@@ -1,11 +1,15 @@
 package com.app.ecitizen.data
 
 import android.content.Context
+import android.net.Uri
+import androidx.core.net.toFile
+import androidx.core.net.toUri
 import com.app.ecitizen.data.datastore.ECitizenPreferencesDataStore
 import com.app.ecitizen.data.network.RetrofitService
 import com.app.ecitizen.data.network.dto.AboutUsDto
 import com.app.ecitizen.data.network.dto.AdvertisementDto
 import com.app.ecitizen.data.network.dto.AppFront
+import com.app.ecitizen.data.network.dto.Complaint
 import com.app.ecitizen.data.network.dto.DownloadDto
 import com.app.ecitizen.data.network.dto.NoticeDto
 import com.app.ecitizen.data.network.dto.NotificationDto
@@ -19,6 +23,11 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.File
 import javax.inject.Inject
 
 class AppRepositoryImpl @Inject constructor(
@@ -127,6 +136,50 @@ class AppRepositoryImpl @Inject constructor(
     }
 
     override fun getContactUs(type: String): Flow<List<AboutUsDto>> {
-        return retrofitService.getAboutUs(type).map { it.data?: emptyList() }
+        return retrofitService.getAboutUs(type).map { it.data ?: emptyList() }
+    }
+
+    override fun getComplaints(): Flow<List<Complaint>> {
+        return retrofitService.getComplaints().map { it.data ?: emptyList() }
+
+    }
+
+    override fun registerCompliant(
+        headline: String,
+        ward: String,
+        houseNo: String,
+        colony: String,
+        street: String,
+        note: String,
+        complaintNo: String,
+        photo: File
+    ): Flow<String> {
+
+        val requestFile =
+            File(photo.path).asRequestBody(
+                context.contentResolver.getType(photo.toUri())
+                    ?.toMediaTypeOrNull()
+            )
+        val filePart: MultipartBody.Part = MultipartBody.Part.createFormData(
+            "complain_file",
+           photo.name,
+            requestFile
+        )
+
+        return retrofitService.registerComplaint(
+            complainHeading = headline.toRequestBody(MultipartBody.FORM),
+            street = street.toRequestBody(MultipartBody.FORM),
+            note = note.toRequestBody(MultipartBody.FORM),
+            colony = colony.toRequestBody(MultipartBody.FORM),
+            complainSrNo = complaintNo.toRequestBody(MultipartBody.FORM),
+            house = houseNo.toRequestBody(MultipartBody.FORM),
+            zone = "00".toRequestBody(MultipartBody.FORM),
+            ward = ward.toRequestBody(MultipartBody.FORM),
+            file = filePart,
+        ).map { it.message }
+    }
+
+    override fun closeComplaint(id: String): Flow<String> {
+        return retrofitService.closeComplaint(id).map { it.message }
     }
 }
