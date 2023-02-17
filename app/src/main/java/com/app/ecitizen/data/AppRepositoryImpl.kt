@@ -1,8 +1,6 @@
 package com.app.ecitizen.data
 
 import android.content.Context
-import android.net.Uri
-import androidx.core.net.toFile
 import androidx.core.net.toUri
 import com.app.ecitizen.data.datastore.ECitizenPreferencesDataStore
 import com.app.ecitizen.data.network.RetrofitService
@@ -41,6 +39,17 @@ class AppRepositoryImpl @Inject constructor(
 
     override suspend fun sendOtp(mobileNumber: String): Flow<String> {
         return retrofitService.sendOtp(mobileNumber).map { it.message }
+    }
+
+    override suspend fun loginAsServiceProvider(
+        mobileNumber: String,
+        password: String
+    ): Flow<String> {
+        return retrofitService.loginAsServiceProvider(mobileNumber, password).map {
+            if (it.data != null)
+                preferencesDataStore.saveUserData(it.data)
+            it.message
+        }
     }
 
     override suspend fun crateUserProfile(
@@ -142,6 +151,9 @@ class AppRepositoryImpl @Inject constructor(
     override fun getComplaints(): Flow<List<Complaint>> {
         return retrofitService.getComplaints().map { it.data ?: emptyList() }
 
+    }
+    override fun getServiceProviderComplaints(status: String): Flow<List<Complaint>> {
+        return retrofitService.getServiceProviderComplaints(status).map { it.data ?: emptyList() }
     }
 
     override fun registerCompliant(

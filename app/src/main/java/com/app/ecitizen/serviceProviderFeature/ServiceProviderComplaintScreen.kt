@@ -1,4 +1,4 @@
-package com.app.ecitizen.features.complaint.view
+package com.app.ecitizen.serviceProviderFeature
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
@@ -9,31 +9,27 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.IconButton
-import androidx.compose.material.Scaffold
-import androidx.compose.material.ScaffoldState
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material.Surface
+import androidx.compose.material.Tab
+import androidx.compose.material.TabRow
+import androidx.compose.material.TabRowDefaults
+import androidx.compose.material.Text
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -50,131 +46,131 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.app.ecitizen.R
 import com.app.ecitizen.data.network.dto.Complaint
-import com.app.ecitizen.model.ScreenEvent
 import com.app.ecitizen.ui.components.ErrorAndLoadingScreen
 import com.app.ecitizen.ui.theme.ECitizenTheme
-import kotlinx.coroutines.flow.collectLatest
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.pagerTabIndicatorOffset
+import com.google.accompanist.pager.rememberPagerState
+import kotlinx.coroutines.launch
 
 @Composable
-fun ViewModelScreenRoute(
-    onBackClick: () -> Unit,
-    navigateToImagePreview: (String) -> Unit,
-    viewComplaintViewModel: ViewComplaintViewModel = hiltViewModel(),
+fun ServiceProviderComplaintScreenRoute(
+    serviceViewModel: ServiceProviderComplaintViewModel = hiltViewModel()
 ) {
-    val uiState by viewComplaintViewModel.uiState.collectAsStateWithLifecycle()
-
-    val loadingComplaintId by viewComplaintViewModel.loadingComplaintId.collectAsState(initial = null)
-
-    val scaffoldState = rememberScaffoldState()
-
-    LaunchedEffect(true) {
-
-        viewComplaintViewModel
-            .screenEvent
-            .collectLatest { event ->
-                when (event) {
-                    is ScreenEvent.ShowSnackbar.MessageString -> {
-                        scaffoldState.snackbarHostState.showSnackbar(event.value)
-                    }
-                    else ->{}
-                }
-            }
-    }
-
-    ViewModelScreen(
+    val uiState by serviceViewModel.uiState.collectAsStateWithLifecycle()
+    ServiceProviderComplaintScreen(
         uiState = uiState,
-        onBackClick = onBackClick,
-        navigateToImagePreview = navigateToImagePreview,
-        scaffoldState = scaffoldState,
-        loadingComplaintId = loadingComplaintId,
-        closeComplaint = viewComplaintViewModel::closeComplaint
+        updateStatus = {}
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalPagerApi::class)
 @Composable
-fun ViewModelScreen(
-    onBackClick: () -> Unit,
+fun ServiceProviderComplaintScreen(
     uiState: ViewComplaintUiState,
-    navigateToImagePreview: (String) -> Unit,
-    scaffoldState: ScaffoldState,
-    loadingComplaintId: String?,
-    closeComplaint: (Complaint) -> Unit,
+    updateStatus: (String) -> Unit
 ) {
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(id = R.string.yout_complaints),
-                        style = MaterialTheme.typography.titleLarge
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    val complaintPages = context.resources.getStringArray(R.array.service_provider_complaints)
+    val pagerState = rememberPagerState()
+
+  /*  LaunchedEffect(pagerState) {
+        updateStatus(
+            if (pagerState.currentPage == 0) {
+                "1"
+            } else {
+                "2"
+            }
+        )
+    }*/
+
+    Surface(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            TabRow(
+                selectedTabIndex = pagerState.currentPage,
+                backgroundColor = MaterialTheme.colorScheme.surface,
+                indicator = { tabPositions ->
+                    TabRowDefaults.Indicator(
+                        Modifier.pagerTabIndicatorOffset(pagerState, tabPositions)
                     )
-                },
-                navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_back),
-                            contentDescription = null
-                        )
-                    }
                 }
-            )
-        },
-        scaffoldState = scaffoldState
-    ) { padding ->
-
-        when (uiState) {
-            is ViewComplaintUiState.Error -> {
-                ErrorAndLoadingScreen(error = uiState.appError)
+            ) {
+                complaintPages.forEachIndexed { index, title ->
+                    Tab(
+                        text = { Text(title) },
+                        selected = pagerState.currentPage == index,
+                        onClick = {
+                            coroutineScope.launch {
+                                pagerState.scrollToPage(index)
+                            }
+                        },
+                    )
+                }
             }
 
-            ViewComplaintUiState.Loading -> {
-                ErrorAndLoadingScreen(true)
-            }
+            HorizontalPager(
+                count = complaintPages.size,
+                state = pagerState,
+            ) { page ->
 
-            is ViewComplaintUiState.Success -> {
-                if (uiState.complaints.isEmpty()) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(20.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-
-                        Text(text = stringResource(id = R.string.no_item_found))
-
+                when (uiState) {
+                    is ViewComplaintUiState.Error -> {
+                        ErrorAndLoadingScreen(error = uiState.appError)
                     }
-                } else {
-                    LazyColumn(
-                        modifier = Modifier.padding(padding),
-                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
-                        verticalArrangement = Arrangement.spacedBy(10.dp)
-                    ) {
-                        items(uiState.complaints, key = { it.id }) { complaint ->
-                            ComplaintItem(
-                                complaint = complaint,
-                                viewPhoto = {navigateToImagePreview(complaint.fileUrl())},
-                                loadingComplaintId = loadingComplaintId,
-                                closeComplaint = { closeComplaint(complaint) }
-                            )
+
+                    ViewComplaintUiState.Loading -> {
+                        ErrorAndLoadingScreen(true)
+                    }
+
+                    is ViewComplaintUiState.Success -> {
+
+                        if (uiState.complaints.isEmpty()) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(20.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+
+                                Text(text = stringResource(id = R.string.no_item_found))
+
+                            }
+                        } else {
+                            LazyColumn(
+                                contentPadding = PaddingValues(
+                                    horizontal = 16.dp,
+                                    vertical = 10.dp
+                                ),
+                                verticalArrangement = Arrangement.spacedBy(10.dp)
+                            ) {
+
+
+                                items(uiState.complaints, key = { it.id }) { complaint ->
+
+                                    ComplaintCard(
+                                        complaint = complaint,
+                                        viewPhoto = {}
+                                    )
+                                }
+
+                            }
                         }
-
                     }
                 }
+
             }
         }
-
     }
 
 }
 
 @Composable
-fun ComplaintItem(
+fun ComplaintCard(
     complaint: Complaint,
     viewPhoto: () -> Unit,
-    closeComplaint: () -> Unit,
-    loadingComplaintId: String?
 ) {
 
     var isExpanded: Boolean by rememberSaveable { mutableStateOf(false) }
@@ -213,14 +209,14 @@ fun ComplaintItem(
                         .weight(1f)
                         .padding(start = 10.dp)
                 ) {
-                    Text(
+                    androidx.compose.material3.Text(
                         modifier = Modifier
                             .padding(end = 10.dp),
                         text = complaint.complainType,
                         style = MaterialTheme.typography.titleMedium
                     )
 
-                    Text(
+                    androidx.compose.material3.Text(
                         modifier = Modifier,
                         text = complaint.createdAt,
                         style = MaterialTheme.typography.bodySmall
@@ -261,7 +257,9 @@ fun ComplaintItem(
                             ComplaintDetailItem(
                                 modifier = Modifier.padding(bottom = 5.dp),
                                 title = R.string.address,
-                                description = context.getString(R.string.ward_number) + "-" + complaint.wardNo + ", "+context.getString(R.string.house_number) + "-" + complaint.houseNo+", "+complaint.streetName+", "+complaint.colony
+                                description = context.getString(R.string.ward_number) + "-" + complaint.wardNo + ", " + context.getString(
+                                    R.string.house_number
+                                ) + "-" + complaint.houseNo + ", " + complaint.streetName + ", " + complaint.colony
                             )
 
                             ComplaintDetailItem(
@@ -282,31 +280,11 @@ fun ComplaintItem(
                                 description = complaint.notes
                             )
 
-                            if(complaint.status == "1"){
-                                if(loadingComplaintId == complaint.id){
-                                    CircularProgressIndicator(
-                                        modifier = Modifier
-                                            .padding(vertical = 10.dp)
-                                            .height(50.dp),
-                                        )
-                                }else{
-                                    OutlinedButton(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(vertical = 5.dp),
-                                        onClick =closeComplaint
-                                    ) {
-                                        Text(text = stringResource(id = R.string.close_complaint))
-                                    }
-                                }
-
-                            }else{
-                                ComplaintDetailItem(
-                                    modifier = Modifier.padding(bottom = 5.dp),
-                                    title = R.string.status,
-                                    description = context.getString(R.string.closed)
-                                )
-                            }
+                            ComplaintDetailItem(
+                                modifier = Modifier.padding(bottom = 5.dp),
+                                title = R.string.status,
+                                description = context.getString(R.string.closed)
+                            )
                         }
                     }
                 }
@@ -327,19 +305,19 @@ fun ComplaintDetailItem(
         verticalAlignment = Alignment.Top
     ) {
 
-        Text(
+        androidx.compose.material3.Text(
             modifier = Modifier.weight(1f),
             text = stringResource(id = title),
             style = MaterialTheme.typography.labelLarge
         )
 
-        Text(
+        androidx.compose.material3.Text(
             modifier = Modifier.padding(horizontal = 10.dp),
             text = ":",
             style = MaterialTheme.typography.labelLarge
         )
 
-        Text(
+        androidx.compose.material3.Text(
             modifier = Modifier.weight(1f),
             text = description,
             style = MaterialTheme.typography.bodyMedium
@@ -347,17 +325,10 @@ fun ComplaintDetailItem(
     }
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
-fun NoticeScreenPreview() {
+fun ServiceProviderComplaintScreenPreview() {
     ECitizenTheme {
-        ViewModelScreen(
-            onBackClick = {},
-            uiState = ViewComplaintUiState.Loading,
-            navigateToImagePreview = {},
-            scaffoldState = rememberScaffoldState(),
-            loadingComplaintId = null,
-            closeComplaint = {}
-        )
+        //ServiceProviderComplaintScreen(U)
     }
 }

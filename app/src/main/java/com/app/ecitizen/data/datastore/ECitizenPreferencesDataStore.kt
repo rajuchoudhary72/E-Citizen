@@ -3,6 +3,7 @@ package com.app.ecitizen.data.datastore
 import com.app.ecitizen.data.network.dto.AppFront
 import com.app.ecitizen.data.network.dto.UserDto
 import com.app.ecitizen.model.AppLocale
+import com.app.ecitizen.model.UserType
 import kotlinx.coroutines.flow.Flow
 
 interface ECitizenPreferencesDataStore {
@@ -20,6 +21,8 @@ interface ECitizenPreferencesDataStore {
     suspend fun saveAppFront(appFront: AppFront)
 
     fun getAppFrontFlow(): Flow<AppFront?>
+
+   suspend fun getUserType(): UserType
 
    suspend fun clearPreferences()
 

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.GTranslate
+import androidx.compose.material.icons.outlined.Logout
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -46,6 +47,7 @@ import com.app.ecitizen.features.home.homeNavigationRoute
 import com.app.ecitizen.features.localization.AppLocaleDialog
 import com.app.ecitizen.features.notification.navigateToNotification
 import com.app.ecitizen.features.profile.profileScreenNavigationRoute
+import com.app.ecitizen.serviceProviderFeature.serviceProviderComplaintScreenNavigationRoute
 import com.app.ecitizen.ui.navigation.ECitizenNavHost
 import com.app.ecitizen.ui.navigation.TopLevelDestination
 import com.app.ecitizen.utils.NetworkMonitor
@@ -54,6 +56,7 @@ import com.app.ecitizen.utils.NetworkMonitor
 @Composable
 fun ECitizenApp(
     networkMonitor: NetworkMonitor,
+    logout: () -> Unit,
     appState: ECitizenAppState = rememberECitizenAppState(networkMonitor = networkMonitor)
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -78,7 +81,9 @@ fun ECitizenApp(
         }
 
         shouldShowAppBar =
-            appState.navController.currentDestination?.route?.contains(homeNavigationRoute) == true
+            appState.navController.currentDestination?.route?.contains(homeNavigationRoute) == true || appState.navController.currentDestination?.route?.contains(
+                serviceProviderComplaintScreenNavigationRoute
+            ) == true
 
         shouldShowBottomBar = mutableListOf(
             homeNavigationRoute,
@@ -129,14 +134,26 @@ fun ECitizenApp(
                             )
                         }
 
-                        IconButton(onClick = {
-                            appState.navController.navigateToNotification()
-                        }) {
+                        if (appState.currentDestination?.route?.contains(
+                                serviceProviderComplaintScreenNavigationRoute
+                            ) == true
+                        ) {
+                            IconButton(onClick = logout) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Logout,
+                                    contentDescription = null
+                                )
+                            }
+                        } else {
+                            IconButton(onClick = {
+                                appState.navController.navigateToNotification()
+                            }) {
 
-                            Icon(
-                                imageVector = Icons.Outlined.Notifications,
-                                contentDescription = null
-                            )
+                                Icon(
+                                    imageVector = Icons.Outlined.Notifications,
+                                    contentDescription = null
+                                )
+                            }
                         }
                     }
                 )
@@ -151,7 +168,9 @@ fun ECitizenApp(
         }
     ) { padding ->
         ECitizenNavHost(
-            modifier = Modifier.padding(padding).consumedWindowInsets(padding),
+            modifier = Modifier
+                .padding(padding)
+                .consumedWindowInsets(padding),
             navController = { appState.navController },
             onBackClick = appState::onBackClick,
             openAppLocaleSettings = appState::showAppLocaleDialog,

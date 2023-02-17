@@ -47,13 +47,18 @@ class MainActivity : ComponentActivity() {
         override fun onReceive(p0: Context?, p1: Intent?) {
             when (p1?.extras?.get("action")) {
                 ACTION_LOGOUT -> {
-                    lifecycleScope.launch {
-                        preferencesDataStore.clearPreferences()
-                        finishAffinity()
-                        startActivity(Intent(this@MainActivity, MainActivity::class.java))
-                    }
+                   logout()
                 }
             }
+        }
+    }
+
+
+    fun logout(){
+        lifecycleScope.launch {
+            preferencesDataStore.clearPreferences()
+            finishAffinity()
+            startActivity(Intent(this@MainActivity, MainActivity::class.java))
         }
     }
 
@@ -105,7 +110,8 @@ class MainActivity : ComponentActivity() {
             }
             ECitizenTheme {
                 ECitizenApp(
-                    networkMonitor = networkMonitor
+                    networkMonitor = networkMonitor,
+                    logout = {logout()}
                 )
             }
         }

@@ -33,13 +33,15 @@ fun NavGraphBuilder.loginScreen(
     snackbarHostState:() -> SnackbarHostState,
     navigateToVerifyOtp: (String) -> Unit,
     openAppLocaleSettings: () -> Unit,
+    navigateToServiceProviderHome:() ->Unit
 
 ) {
     composable(route = loginNavigationRoute) {
         LoginRoute(
             snackbarHostState=snackbarHostState,
             navigateToVerifyOtp = navigateToVerifyOtp,
-            openAppLocaleSettings = openAppLocaleSettings
+            openAppLocaleSettings = openAppLocaleSettings,
+            navigateToServiceProviderHome = navigateToServiceProviderHome
         )
     }
 }

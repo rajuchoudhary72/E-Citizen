@@ -31,6 +31,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.app.ecitizen.BuildConfig
 import com.app.ecitizen.R
+import com.app.ecitizen.model.UserType
+import com.app.ecitizen.serviceProviderFeature.ServiceProviderComplaintViewModel
 import com.app.ecitizen.ui.components.LoadingWheel
 import com.app.ecitizen.ui.theme.ECitizenTheme
 import kotlinx.coroutines.flow.collectLatest
@@ -40,6 +42,7 @@ import kotlinx.coroutines.flow.debounce
 fun SplashScreenRoute(
     navigateToLogin: () -> Unit,
     navigateToHome: () -> Unit,
+    navigateToServiceProviderComplaint: () -> Unit,
     splashViewModel: SplashViewModel = hiltViewModel(),
 ) {
 
@@ -51,7 +54,12 @@ fun SplashScreenRoute(
             .debounce(3000)
             .collectLatest { userDto ->
                 if (userDto != null) {
-                    navigateToHome()
+                    if(UserType.getUserType(userDto.userType) == UserType.SERVICE_PROVIDER){
+                        navigateToServiceProviderComplaint()
+                    }else{
+                        navigateToHome()
+                    }
+
                 } else {
                     navigateToLogin()
                 }

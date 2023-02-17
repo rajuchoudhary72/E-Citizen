@@ -8,9 +8,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.navOptions
 import com.app.ecitizen.R
 import com.app.ecitizen.features.about.aboutUs
-import com.app.ecitizen.features.about.navigateToAboutUs
 import com.app.ecitizen.features.advertisement.advertisementScreen
 import com.app.ecitizen.features.advertisement.navigateToAdvertisement
+import com.app.ecitizen.features.auth.loginNavigationRoute
 import com.app.ecitizen.features.auth.loginScreen
 import com.app.ecitizen.features.auth.navigateToLoginScreen
 import com.app.ecitizen.features.auth.navigateToOtpVerification
@@ -44,6 +44,8 @@ import com.app.ecitizen.features.splash.splashScreenNavigationRoute
 import com.app.ecitizen.features.telephone.navigateToPhoneBook
 import com.app.ecitizen.features.telephone.navigateToTelephoneDirectory
 import com.app.ecitizen.features.telephone.telephoneDirectoryScreen
+import com.app.ecitizen.serviceProviderFeature.navigateToServiceProviderComplaintScreen
+import com.app.ecitizen.serviceProviderFeature.serviceProviderComplaintScreen
 
 /**
  * Top-level navigation graph. Navigation is organized as explained at
@@ -101,15 +103,48 @@ fun ECitizenNavHost(
                     // Restore state when reselecting a previously selected item
                     restoreState = true
                 }
-                navController().navigateToHome(navOptions)
-                navController().navigateToLoginScreen()
+                navController().navigateToLoginScreen(navOptions)
+            },
+            navigateToServiceProviderComplaint = {
+                val navOptions = navOptions {
+                    // Pop up to the start destination of the graph to
+                    // avoid building up a large stack of destinations
+                    // on the back stack as users select items
+                    popUpTo(splashScreenNavigationRoute) {
+                        saveState = true
+                        inclusive = true
+                    }
+                    // Avoid multiple copies of the same destination when
+                    // reselecting the same item
+                    launchSingleTop = true
+                    // Restore state when reselecting a previously selected item
+                    restoreState = true
+                }
+                navController().navigateToServiceProviderComplaintScreen(navOptions)
             }
         )
 
         loginScreen(
             snackbarHostState = snackbarHostState,
             navigateToVerifyOtp = navController()::navigateToOtpVerification,
-            openAppLocaleSettings = openAppLocaleSettings
+            openAppLocaleSettings = openAppLocaleSettings,
+            navigateToServiceProviderHome = {
+                val navOptions = navOptions {
+                    // Pop up to the start destination of the graph to
+                    // avoid building up a large stack of destinations
+                    // on the back stack as users select items
+                    popUpTo(loginNavigationRoute) {
+                        saveState = true
+                        inclusive = true
+                    }
+                    // Avoid multiple copies of the same destination when
+                    // reselecting the same item
+                    launchSingleTop = true
+                    // Restore state when reselecting a previously selected item
+                    restoreState = true
+                }
+                navController().navigateToServiceProviderComplaintScreen(navOptions)
+            }
         )
 
         otpVerificationScreen(
@@ -240,5 +275,7 @@ fun ECitizenNavHost(
             onBackClick = onBackClick,
             navigateToPhoneBook = { navController().navigateToContact(it) }
         )
+
+        serviceProviderComplaintScreen()
     }
 }

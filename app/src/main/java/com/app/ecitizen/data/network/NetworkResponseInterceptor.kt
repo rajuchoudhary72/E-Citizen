@@ -36,7 +36,7 @@ class NetworkResponseInterceptor @Inject constructor(
 
         if (response.isSuccessful) {
 
-            val responseString = response.peekBody(10000).string()
+            val responseString = response.peekBody(1000000000).string()
 
             Log.e("Response Interceptor", responseString)
 

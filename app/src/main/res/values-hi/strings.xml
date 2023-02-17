@@ -123,4 +123,10 @@
     <string name="close_complaint">शिकायत बंद करें</string>
     <string name="status">दर्जा</string>
     <string name="closed">बंद किया हुआ</string>
+    <string name="login_as_service_provider">सेवा प्रदाता के रूप में लॉगिन करें</string>
+    <string name="login_as_citizen">नागरिक के रूप में लॉगिन करें</string>
+    <string name="password_validation_msg">पासवर्ड दर्ज करना आवश्यक है।</string>
+    <string name="open_complaint">खुली शिकायत</string>
+    <string name="this_download_file_have_some_issue_with_url">इस डाउनलोड में URL के साथ कुछ समस्या है।</string>
+
 </resources>

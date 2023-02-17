@@ -9,6 +9,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.app.ecitizen.data.network.dto.AppFront
 import com.app.ecitizen.data.network.dto.UserDto
 import com.app.ecitizen.model.AppLocale
+import com.app.ecitizen.model.UserType
 import com.google.gson.Gson
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
@@ -67,6 +68,10 @@ class ECitizenPreferencesDataStoreImpl @Inject constructor(
             } else
                 gson.fromJson(appFront, AppFront::class.java)
         }
+    }
+
+    override suspend fun getUserType(): UserType {
+        return UserType.getUserType(getUserDtoFlow().first()?.userType)
     }
 
     override suspend fun clearPreferences() {

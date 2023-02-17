@@ -39,6 +39,13 @@ interface RetrofitService {
         @Field("phone_no") mobileNumber: String
     ): Flow<OtpResponseDto>
 
+    @POST("api/service-provider-log-in")
+    @FormUrlEncoded
+    fun loginAsServiceProvider(
+        @Field("phone_no") mobileNumber: String,
+        @Field("password") password: String
+    ): Flow<NetworkResponse<UserDto>>
+
     @POST("api/user-signup")
     @FormUrlEncoded
     fun createProfile(
@@ -113,5 +120,8 @@ interface RetrofitService {
 
     @GET("api/get_user_complain")
     fun getComplaints(): Flow<NetworkResponse<List<Complaint>>>
+
+    @GET("api/service-provider-complain-list")
+    fun getServiceProviderComplaints(@Query("Status") id:String = "1"): Flow<NetworkResponse<List<Complaint>>>
 
 }

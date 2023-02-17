@@ -124,8 +124,14 @@
     <string name="stagnant_water_on_the_road">Stagnant water on the Road</string>
     <string name="address">Address</string>
     <string name="id">ID</string>
-    <string name="close_complaint">Close Complaint</string>
     <string name="status">Status</string>
     <string name="closed">Closed</string>
+    <string name="login_as_service_provider">Login as Service Provider</string>
+    <string name="login_as_citizen">Login as Citizen</string>
+    <string name="password_validation_msg">Password filed required.</string>
+
+    <string name="open_complaint">Open Complaint</string>
+    <string name="close_complaint">Close Complaint</string>
+    <string name="this_download_file_have_some_issue_with_url">This download has some issue with the URL.</string>
 
 </resources>

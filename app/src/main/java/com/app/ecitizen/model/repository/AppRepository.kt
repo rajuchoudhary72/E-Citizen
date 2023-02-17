@@ -1,6 +1,5 @@
 package com.app.ecitizen.model.repository
 
-import android.net.Uri
 import com.app.ecitizen.data.network.dto.AboutUsDto
 import com.app.ecitizen.data.network.dto.AdvertisementDto
 import com.app.ecitizen.data.network.dto.AppFront
@@ -20,6 +19,8 @@ interface AppRepository {
     fun getAppFronts(): Flow<List<AppFront>>
 
     suspend fun sendOtp(mobileNumber: String): Flow<String>
+
+    suspend fun loginAsServiceProvider(mobileNumber: String,password: String): Flow<String>
 
     suspend fun crateUserProfile(
         mobileNumber: String,
@@ -55,6 +56,7 @@ interface AppRepository {
     fun getContactUs(type: String): Flow<List<AboutUsDto>>
 
     fun getComplaints(): Flow<List<Complaint>>
+    fun getServiceProviderComplaints(status: String): Flow<List<Complaint>>
 
     fun registerCompliant(
         headline:String,

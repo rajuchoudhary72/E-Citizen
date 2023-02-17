@@ -11,7 +11,7 @@ data class Complaint(
     @SerializedName("complain_file")
     val complainFile: String?,
     @SerializedName("complain_id")
-    val complainId: String?,
+    val complainId: String,
     @SerializedName("complain_row_id")
     val complainRowId: Any?,
     @SerializedName("complain_type")

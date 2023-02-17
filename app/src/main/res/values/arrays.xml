@@ -16,4 +16,10 @@
         <item>@string/open_manholes_or_drains</item>
         <item>@string/stagnant_water_on_the_road</item>
     </string-array>
+
+
+    <string-array name="service_provider_complaints">
+        <item>@string/open_complaint</item>
+        <item>@string/close_complaint</item>
+    </string-array>
 </resources>
