@@ -123,4 +123,16 @@
     <string name="close_complaint">शिकायत बंद करें</string>
     <string name="status">दर्जा</string>
     <string name="closed">बंद किया हुआ</string>
+    <string name="nodal_officer">नोडल अधिकारी</string>
+    <string name="nodal_officer_name">मोहम्मद याकूब मलकान</string>
+    <string name="designation">पद</string>
+    <string name="commiss_rank">कार्यकारी अधिकारी</string>
+    <string name="comiss_phone">फ़ोन नंबर</string>
+    <string name="comiss_mobile_no">मोबाइल नंबर</string>
+    <string name="comiss_email">ईमेल</string>
+    <string name="khandela_contact_person">कार्यकारी अधिकारी</string>
+    <string name="address_palikha">पता</string>
+    <string name="phone_number_palikha">फ़ोन नंबर</string>
+    <string name="address_plakha">बस स्टैंड के पास, भोजी की ढाणी, खंडेला, राजस्थान 332909</string>
+    <string name="name_officer">श्रीमती ममता चौधरी\nसुरेश कुमार चौहान</string>
 </resources>

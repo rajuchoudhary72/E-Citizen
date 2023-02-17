@@ -127,5 +127,17 @@
     <string name="close_complaint">Close Complaint</string>
     <string name="status">Status</string>
     <string name="closed">Closed</string>
+    <string name="nodal_officer">Nodal Officer</string>
+    <string name="nodal_officer_name">Mohammad Yakub Malkan</string>
+    <string name="designation">Designation</string>
+    <string name="commiss_rank">Executive Officer</string>
+    <string name="comiss_phone">Phone Number</string>
+    <string name="comiss_mobile_no">Mobile Number</string>
+    <string name="comiss_email">Email</string>
+    <string name="khandela_contact_person">Executive Officer</string>
+    <string name="address_palikha">Address</string>
+    <string name="phone_number_palikha">Phone Number</string>
+    <string name="address_plakha">near bus stand, Bhoji Ki Dhani, Khandela, Rajasthan 332909</string>
+    <string name="name_officer">Mrs. Mamta Choudhary\nSuresh Kumar Chouhan</string>
 
 </resources>
