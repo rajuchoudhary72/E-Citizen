@@ -102,6 +102,8 @@ dependencies {
 
     implementation(libs.zoomage)
     implementation(libs.coil)
+    implementation (libs.imagepicker)
+
 
     // custom declaration for latest versions of material 3 and adaptive accompanist
     implementation("androidx.compose.material3:material3:1.0.0-rc01")

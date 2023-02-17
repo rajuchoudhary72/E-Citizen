@@ -1,8 +1,8 @@
 package com.app.ecitizen.features.complaint.register
 
+import android.app.Activity
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -22,8 +22,10 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -33,15 +35,19 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -52,17 +58,88 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.app.ecitizen.R
+import com.app.ecitizen.model.ScreenEvent
 import com.app.ecitizen.ui.theme.ECitizenTheme
+import com.github.dhaval2404.imagepicker.ImagePicker
+import com.github.dhaval2404.imagepicker.util.FileUriUtils
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import java.io.File
 
 @Composable
 fun RegisterComplaintRoute(
     onBackClick: () -> Unit,
     registerComplaintViewModel: RegisterComplaintViewModel = hiltViewModel(),
 ) {
+    val context = LocalContext.current
+    val snackbarHostState = rememberScaffoldState().snackbarHostState
+    val coroutineScope = rememberCoroutineScope()
+
     val photoPickerLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-            uri?.let { registerComplaintViewModel.updateImage(it) }
+        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            val resultCode = result.resultCode
+            val data = result.data
+
+            when (resultCode) {
+                Activity.RESULT_OK -> {
+                    val fileUri: Uri = data?.data!!
+                    val file = File(FileUriUtils.getRealPath(context, fileUri)!!)
+                    registerComplaintViewModel.updateImage(file)
+                }
+
+                ImagePicker.RESULT_ERROR -> {
+                    coroutineScope.launch {
+                        snackbarHostState.showSnackbar(ImagePicker.getError(data))
+                    }
+                }
+            }
         }
+
+
+
+
+    LaunchedEffect(true) {
+        registerComplaintViewModel.updateComplaintType(
+            context.resources.getStringArray(R.array.complaint_type).first()
+        )
+
+
+        registerComplaintViewModel
+            .screenEvent
+            .collectLatest { event ->
+                when (event) {
+                    is ScreenEvent.Navigate -> {
+                        onBackClick()
+                    }
+
+                    is ScreenEvent.ShowSnackbar.MessageResId -> {
+                        snackbarHostState.showSnackbar(context.getString(event.resId))
+                    }
+
+                    is ScreenEvent.ShowSnackbar.MessageString -> {
+                        snackbarHostState.showSnackbar(event.value)
+                    }
+                }
+            }
+    }
+
+    var isFormFilled by remember {
+        mutableStateOf(false)
+    }
+
+    LaunchedEffect(
+        registerComplaintViewModel.wardNumber,
+        registerComplaintViewModel.note,
+        registerComplaintViewModel.streetName,
+        registerComplaintViewModel.colonyName,
+        registerComplaintViewModel.image,
+    ) {
+        isFormFilled = registerComplaintViewModel.wardNumber.isNotEmpty() &&
+                registerComplaintViewModel.note.isNotEmpty() &&
+                registerComplaintViewModel.streetName.isNotEmpty() &&
+                registerComplaintViewModel.colonyName.isNotEmpty() &&
+                registerComplaintViewModel.image != null
+    }
 
     RegisterComplaintScreen(
         onBackClick = onBackClick,
@@ -70,6 +147,7 @@ fun RegisterComplaintRoute(
         houseNumber = registerComplaintViewModel.houseNumber,
         colonyName = registerComplaintViewModel.colonyName,
         streetName = registerComplaintViewModel.streetName,
+        complaintType = registerComplaintViewModel.complaintType,
         note = registerComplaintViewModel.note,
         image = registerComplaintViewModel.image,
         updateWardNumber = registerComplaintViewModel::updateWardNumber,
@@ -77,9 +155,19 @@ fun RegisterComplaintRoute(
         updateColonyName = registerComplaintViewModel::updateColonyName,
         updateStreetName = registerComplaintViewModel::updateStreetName,
         updateNote = registerComplaintViewModel::updateNote,
+        updateComplaintType = registerComplaintViewModel::updateComplaintType,
         pickPhoto = {
-            photoPickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-        }
+            ImagePicker
+                .with(context as Activity)
+                .compress(500)
+                .createIntent { intent ->
+                    photoPickerLauncher.launch(intent)
+                }
+
+        },
+        isFormFilled = { isFormFilled },
+        isLoading = { registerComplaintViewModel.isLoading },
+        registerComplaint = registerComplaintViewModel::registerComplaint
 
     )
 }
@@ -89,17 +177,22 @@ fun RegisterComplaintRoute(
 fun RegisterComplaintScreen(
     onBackClick: () -> Unit,
     wardNumber: String,
+    complaintType: String,
     houseNumber: String,
     colonyName: String,
     streetName: String,
     note: String,
-    image: Uri?,
+    image: File?,
     updateWardNumber: (String) -> Unit,
+    updateComplaintType: (String) -> Unit,
     updateHouseNumber: (String) -> Unit,
     updateColonyName: (String) -> Unit,
     updateStreetName: (String) -> Unit,
     updateNote: (String) -> Unit,
     pickPhoto: () -> Unit,
+    registerComplaint: () -> Unit,
+    isFormFilled: () -> Boolean,
+    isLoading: () -> Boolean,
 ) {
 
     Scaffold(
@@ -133,7 +226,8 @@ fun RegisterComplaintScreen(
 
 
             item {
-                ComplaintTypeTextField()
+
+                ComplaintTypeTextField(complaintType, updateComplaintType)
 
                 Text(
                     modifier = Modifier.padding(top = 8.dp),
@@ -236,6 +330,8 @@ fun RegisterComplaintScreen(
                 ) {
                     if (image != null) {
                         AsyncImage(
+                            modifier = Modifier
+                                .fillMaxSize(),
                             model = image,
                             contentDescription = null,
                             contentScale = ContentScale.Crop
@@ -260,13 +356,29 @@ fun RegisterComplaintScreen(
                     }
                 }
 
-                Button(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(top = 30.dp),
-                    onClick = {}
-                ) {
-                    Text(text = stringResource(id = R.string.submit))
+                if (isLoading()) {
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .padding(top = 40.dp)
+                                .height(50.dp),
+
+                            )
+                    }
+
+                } else {
+                    Button(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(top = 30.dp),
+                        onClick = registerComplaint,
+                        enabled = isFormFilled()
+                    ) {
+                        Text(text = stringResource(id = R.string.submit))
+                    }
                 }
             }
         }
@@ -275,12 +387,12 @@ fun RegisterComplaintScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ComplaintTypeTextField() {
+fun ComplaintTypeTextField(complaintType: String, updateComplaintType: (String) -> Unit) {
+    val context = LocalContext.current
+    val options = context.resources.getStringArray(R.array.complaint_type)
 
-    val options = listOf("Option 1", "Option 2", "Option 3", "Option 4", "Option 5")
     var expanded by remember { mutableStateOf(false) }
-    var selectedOptionText by remember { mutableStateOf(options[0]) }
-// We want to react on tap/press on TextField to show menu
+
     Box(
         modifier = Modifier.fillMaxWidth(),
     ) {
@@ -296,7 +408,7 @@ fun ComplaintTypeTextField() {
                     .fillMaxWidth()
                     .padding(top = 5.dp)
                     .clickable { expanded = expanded.not() },
-                value = selectedOptionText,
+                value = complaintType,
                 placeholder = { Text(text = stringResource(id = R.string.complaint_type)) },
                 onValueChange = {},
                 readOnly = true,
@@ -307,6 +419,12 @@ fun ComplaintTypeTextField() {
                         contentDescription = null
                     )
                 },
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    disabledBorderColor = MaterialTheme.colorScheme.outline,
+                    disabledPlaceholderColor = MaterialTheme.colorScheme.onSurface,
+                    disabledTextColor = MaterialTheme.colorScheme.onSurface,
+                    disabledTrailingIconColor = MaterialTheme.colorScheme.onSurface,
+                )
             )
         }
 
@@ -318,15 +436,15 @@ fun ComplaintTypeTextField() {
         ) {
             options.forEach { selectionOption ->
                 DropdownMenuItem(
-                    modifier = Modifier,
+                    modifier = Modifier.fillMaxWidth(),
                     text = {
                         Text(
-
+                            modifier = Modifier.fillMaxWidth(),
                             text = selectionOption
                         )
                     },
                     onClick = {
-                        selectedOptionText = selectionOption
+                        updateComplaintType(selectionOption)
                         expanded = false
                     },
                     contentPadding = PaddingValues(10.dp),
@@ -344,12 +462,22 @@ fun SplashScreenPreview() {
         RegisterComplaintScreen(
             onBackClick = {},
             wardNumber = "",
+            complaintType = "",
             houseNumber = "",
             colonyName = "",
             streetName = "",
             note = "",
             image = null,
-            {}, {}, {}, {}, {}, {},
+            updateWardNumber = {},
+            updateComplaintType = {},
+            updateHouseNumber = {},
+            updateColonyName = {},
+            updateStreetName = {},
+            updateNote = {},
+            pickPhoto = {},
+            isFormFilled = { false },
+            registerComplaint = {},
+            isLoading = { false }
         )
     }
 }

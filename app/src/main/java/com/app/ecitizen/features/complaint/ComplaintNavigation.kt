@@ -19,7 +19,8 @@ fun NavController.navigateToViewComplaint() {
 }
 
 fun NavGraphBuilder.registerComplaintScreen(
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    navigateToImagePreview: (String) -> Unit,
 ) {
     composable(route = registerComplaintScreenNavigationRoute) {
         RegisterComplaintRoute(
@@ -29,6 +30,7 @@ fun NavGraphBuilder.registerComplaintScreen(
     composable(route = viewComplaintScreenNavigationRoute) {
         ViewModelScreenRoute(
             onBackClick = onBackClick,
+            navigateToImagePreview  = navigateToImagePreview
         )
     }
 

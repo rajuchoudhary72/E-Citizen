@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 data class ApiError(
     @SerializedName("status")
-    val status: Int,
+    val status: Int?,
     @SerializedName("Message")
-    val message: String,
+    val message: String?,
 )

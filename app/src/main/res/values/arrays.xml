@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="complaint_type">
+        <item>@string/garbage_vehicle_not_arrived</item>
+        <item>@string/garbage_dump</item>
+        <item>@string/dustbins_not_cleaned</item>
+        <item>@string/dead_animal</item>
+        <item>@string/overflow_of_sewerage_or_storm_water</item>
+        <item>@string/overflow_of_septic_tanks_new</item>
+        <item>@string/yellow_spot</item>
+        <item>@string/sweeping_not_done</item>
+        <item>@string/no_electricity_in_public_toilet</item>
+        <item>@string/no_water_supply_in_public_toilet</item>
+        <item>@string/public_toilet_blockage</item>
+        <item>@string/public_toilet_cleaning</item>
+        <item>@string/open_manholes_or_drains</item>
+        <item>@string/stagnant_water_on_the_road</item>
+    </string-array>
+</resources>
