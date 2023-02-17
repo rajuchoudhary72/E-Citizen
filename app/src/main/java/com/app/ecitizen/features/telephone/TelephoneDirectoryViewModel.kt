@@ -38,22 +38,22 @@ data class TelephoneDirectory(
             TelephoneDirectory(
                 icon = R.drawable.about_us_emp,
                 name = R.string.chairman,
-                searchKey = "Chairman"
+                searchKey = "chairman"
             ),
             TelephoneDirectory(
                 icon = R.drawable.about_us_emp,
                 name = R.string.commissioner,
-                searchKey = "Commissioner"
+                searchKey = "commissioner"
             ),
             TelephoneDirectory(
                 icon = R.drawable.about_us_emp,
                 name = R.string.office_employees,
-                searchKey = "Office employees"
+                searchKey = "office_employee"
             ),
             TelephoneDirectory(
                 icon = R.drawable.about_us_emp,
                 name = R.string.ward_members,
-                searchKey = "Ward members"
+                searchKey = "ward_member"
             ),
         )
     }
