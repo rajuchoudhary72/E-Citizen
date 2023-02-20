@@ -115,6 +115,7 @@ interface RetrofitService {
         @Part("notes") note: RequestBody,
         @Part("zone_no") zone: RequestBody,
         @Part("ward_no") ward: RequestBody,
+        @Part("complain_type_sr_no") complainTypeSrNo: RequestBody,
         @Part file: MultipartBody.Part,
     ): Flow<NetworkResponse<String>>
 

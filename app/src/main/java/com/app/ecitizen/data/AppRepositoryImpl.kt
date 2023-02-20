@@ -164,7 +164,8 @@ class AppRepositoryImpl @Inject constructor(
         street: String,
         note: String,
         complaintNo: String,
-        photo: File
+        photo: File,
+        complainTypeSrNo: Int
     ): Flow<String> {
 
         val requestFile =
@@ -187,6 +188,7 @@ class AppRepositoryImpl @Inject constructor(
             house = houseNo.toRequestBody(MultipartBody.FORM),
             zone = "00".toRequestBody(MultipartBody.FORM),
             ward = ward.toRequestBody(MultipartBody.FORM),
+            complainTypeSrNo = complainTypeSrNo.toString().toRequestBody(MultipartBody.FORM),
             file = filePart,
         ).map { it.message }
     }

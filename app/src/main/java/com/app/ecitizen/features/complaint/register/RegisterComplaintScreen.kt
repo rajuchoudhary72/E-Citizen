@@ -95,12 +95,13 @@ fun RegisterComplaintRoute(
             }
         }
 
+   val complaintTypes =  context.resources.getStringArray(R.array.complaint_type)
 
 
 
     LaunchedEffect(true) {
         registerComplaintViewModel.updateComplaintType(
-            context.resources.getStringArray(R.array.complaint_type).first()
+            complaintTypes.first()
         )
 
 
@@ -155,7 +156,11 @@ fun RegisterComplaintRoute(
         updateColonyName = registerComplaintViewModel::updateColonyName,
         updateStreetName = registerComplaintViewModel::updateStreetName,
         updateNote = registerComplaintViewModel::updateNote,
-        updateComplaintType = registerComplaintViewModel::updateComplaintType,
+        updateComplaintType ={ complaint ->
+            registerComplaintViewModel.updateComplaintType(complaint)
+            registerComplaintViewModel.updateComplaintNo(complaintTypes.indexOf(complaint))
+
+        },
         pickPhoto = {
             ImagePicker
                 .with(context as Activity)

@@ -26,13 +26,16 @@ class ServiceProviderComplaintViewModel @Inject constructor(
 
     private val status = MutableStateFlow("1")
 
-    fun updateStats(status:String){
+    fun updateStats(status: String) {
         this.status.update { status }
     }
 
     val uiState =
-        appRepository
-            .getServiceProviderComplaints("1")
+
+        status.flatMapLatest {
+            appRepository
+                .getServiceProviderComplaints(it)
+        }
             .toLoadingState()
             .flowOn(Dispatchers.IO)
             .map { state ->

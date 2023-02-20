@@ -18,7 +18,6 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.Surface
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
-import androidx.compose.material.TabRowDefaults
 import androidx.compose.material.Text
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -26,9 +25,9 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -48,10 +47,6 @@ import com.app.ecitizen.R
 import com.app.ecitizen.data.network.dto.Complaint
 import com.app.ecitizen.ui.components.ErrorAndLoadingScreen
 import com.app.ecitizen.ui.theme.ECitizenTheme
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.pagerTabIndicatorOffset
-import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
 
 @Composable
@@ -59,13 +54,13 @@ fun ServiceProviderComplaintScreenRoute(
     serviceViewModel: ServiceProviderComplaintViewModel = hiltViewModel()
 ) {
     val uiState by serviceViewModel.uiState.collectAsStateWithLifecycle()
+
     ServiceProviderComplaintScreen(
         uiState = uiState,
-        updateStatus = {}
+        updateStatus = serviceViewModel::updateStats
     )
 }
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun ServiceProviderComplaintScreen(
     uiState: ViewComplaintUiState,
@@ -75,97 +70,80 @@ fun ServiceProviderComplaintScreen(
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val complaintPages = context.resources.getStringArray(R.array.service_provider_complaints)
-    val pagerState = rememberPagerState()
+    var selectedTab by remember {
+        mutableStateOf(0)
+    }
 
-  /*  LaunchedEffect(pagerState) {
-        updateStatus(
-            if (pagerState.currentPage == 0) {
-                "1"
-            } else {
-                "2"
-            }
-        )
-    }*/
 
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
             TabRow(
-                selectedTabIndex = pagerState.currentPage,
+                selectedTabIndex = selectedTab,
                 backgroundColor = MaterialTheme.colorScheme.surface,
-                indicator = { tabPositions ->
-                    TabRowDefaults.Indicator(
-                        Modifier.pagerTabIndicatorOffset(pagerState, tabPositions)
-                    )
-                }
             ) {
                 complaintPages.forEachIndexed { index, title ->
                     Tab(
                         text = { Text(title) },
-                        selected = pagerState.currentPage == index,
+                        selected = selectedTab == index,
                         onClick = {
                             coroutineScope.launch {
-                                pagerState.scrollToPage(index)
+                                selectedTab = index
+                                updateStatus(index.plus(1).toString())
                             }
                         },
                     )
                 }
             }
+            when (uiState) {
+                is ViewComplaintUiState.Error -> {
+                    ErrorAndLoadingScreen(error = uiState.appError)
+                }
 
-            HorizontalPager(
-                count = complaintPages.size,
-                state = pagerState,
-            ) { page ->
+                ViewComplaintUiState.Loading -> {
+                    ErrorAndLoadingScreen(true)
+                }
 
-                when (uiState) {
-                    is ViewComplaintUiState.Error -> {
-                        ErrorAndLoadingScreen(error = uiState.appError)
-                    }
+                is ViewComplaintUiState.Success -> {
 
-                    ViewComplaintUiState.Loading -> {
-                        ErrorAndLoadingScreen(true)
-                    }
+                    if (uiState.complaints.isEmpty()) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(20.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
 
-                    is ViewComplaintUiState.Success -> {
+                            Text(text = stringResource(id = R.string.no_item_found))
 
-                        if (uiState.complaints.isEmpty()) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(20.dp),
-                                contentAlignment = Alignment.Center
-                            ) {
+                        }
+                    } else {
+                        LazyColumn(
+                            contentPadding = PaddingValues(
+                                horizontal = 16.dp,
+                                vertical = 10.dp
+                            ),
+                            verticalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
 
-                                Text(text = stringResource(id = R.string.no_item_found))
 
+                            items(uiState.complaints, key = { it.id }) { complaint ->
+
+                                ComplaintCard(
+                                    complaint = complaint,
+                                    viewPhoto = {}
+                                )
                             }
-                        } else {
-                            LazyColumn(
-                                contentPadding = PaddingValues(
-                                    horizontal = 16.dp,
-                                    vertical = 10.dp
-                                ),
-                                verticalArrangement = Arrangement.spacedBy(10.dp)
-                            ) {
 
-
-                                items(uiState.complaints, key = { it.id }) { complaint ->
-
-                                    ComplaintCard(
-                                        complaint = complaint,
-                                        viewPhoto = {}
-                                    )
-                                }
-
-                            }
                         }
                     }
                 }
-
             }
+
         }
     }
 
 }
+
 
 @Composable
 fun ComplaintCard(

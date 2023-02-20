@@ -1,15 +1,10 @@
 package com.app.ecitizen.features.complaint.register
 
-import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.app.ecitizen.R
-import com.app.ecitizen.features.home.homeNavigationRoute
-import com.app.ecitizen.features.profile.updateProfileScreenNavigationRoute
-import com.app.ecitizen.model.LoadState
 import com.app.ecitizen.model.ScreenEvent
 import com.app.ecitizen.model.repository.AppRepository
 import com.app.ecitizen.utils.toLoadingState
@@ -52,6 +47,8 @@ class RegisterComplaintViewModel @Inject constructor(
     var note by mutableStateOf("")
         private set
 
+    private var complaintNo by mutableStateOf(0)
+
     var image by mutableStateOf<File?>(null)
         private set
 
@@ -62,6 +59,10 @@ class RegisterComplaintViewModel @Inject constructor(
 
     fun updateComplaintType(complaintType: String) {
         this.complaintType = complaintType
+    }
+
+    fun updateComplaintNo(complaintNo: Int) {
+        this.complaintNo = complaintNo
     }
 
     fun updateHouseNumber(houseNumber: String) {
@@ -84,18 +85,22 @@ class RegisterComplaintViewModel @Inject constructor(
         this.image = image
     }
 
-    fun registerComplaint(){
+    fun registerComplaint() {
         viewModelScope.launch {
+
+            val complaintSerialNumber = String.format("%02d", complaintNo.plus(1))
+
             appRepository
                 .registerCompliant(
                     headline = complaintType,
                     colony = colonyName,
-                    complaintNo = "02",
+                    complaintNo = complaintSerialNumber,
                     houseNo = houseNumber,
                     note = note,
                     photo = image!!,
                     street = streetName,
-                    ward = wardNumber
+                    ward = wardNumber,
+                    complainTypeSrNo = complaintNo.plus(1)
                 )
                 .toLoadingState()
                 .flowOn(Dispatchers.IO)
@@ -109,7 +114,7 @@ class RegisterComplaintViewModel @Inject constructor(
                     state.getValueOrNull()?.let { message ->
                         _screenEvent.emit(
                             ScreenEvent.ShowSnackbar.MessageString(
-                               message
+                                message
                             )
                         )
 

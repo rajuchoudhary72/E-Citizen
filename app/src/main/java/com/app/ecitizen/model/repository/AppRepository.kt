@@ -59,14 +59,15 @@ interface AppRepository {
     fun getServiceProviderComplaints(status: String): Flow<List<Complaint>>
 
     fun registerCompliant(
-        headline:String,
+        headline: String,
         ward: String,
-        houseNo:String,
+        houseNo: String,
         colony: String,
-        street:String,
-        note:String,
-        complaintNo:String,
-        photo: File
+        street: String,
+        note: String,
+        complaintNo: String,
+        photo: File,
+        complainTypeSrNo: Int
     ):Flow<String>
 
     abstract fun closeComplaint(id: String): Flow<String>
